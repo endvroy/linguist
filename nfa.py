@@ -4,8 +4,7 @@ from collections import defaultdict
 class NFA:
     epsilon = None
 
-    def __init__(self):  # a placeholder
-        # todo: replace with a builder
+    def __init__(self):
         self.trans_matrix = {}
         self.accepting_states = set()
         self.starting_state = None
