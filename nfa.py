@@ -61,13 +61,14 @@ class NFA:
                 next_set |= self.trans_matrix[state][char]
         return next_set
 
-    def to_dfa(self):
+    def subset_cons(self):
         trans_matrix = {}
         accepting_states = set()
-        working_list = [frozenset(self.epsilon_closure({self.starting_state}))]
+        starting_state = frozenset(self.epsilon_closure({self.starting_state}))
+        work_list = [starting_state]
 
-        while working_list:
-            states = working_list.pop()
+        while work_list:
+            states = work_list.pop()
             trans_matrix[states] = {}
 
             for char in self.alphabet:
@@ -82,6 +83,6 @@ class NFA:
 
                     trans_matrix[states][char] = new_states
                     if new_states not in trans_matrix.keys():
-                        working_list.append(new_states)
+                        work_list.append(new_states)
 
-        return trans_matrix, accepting_states
+        return trans_matrix, starting_state, accepting_states

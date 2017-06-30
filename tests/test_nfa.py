@@ -99,9 +99,9 @@ class TestSubsetConstruction(unittest.TestCase):
         self.assertEqual(nfa.epsilon_closure(nfa._next_set({1, 2, 3, 4, 6, 9}, 'c')),
                          {7, 8, 9, 3, 4, 6})
 
-    def test_to_dfa(self):
+    def test_subset_cons(self):
         nfa = build_test_nfa()
-        trans_matrix, accepting_states = nfa.to_dfa()
+        trans_matrix, starting_state, accepting_states = nfa.subset_cons()
         d0 = frozenset({0})
         d1 = frozenset({1, 2, 3, 4, 6, 9})
         d2 = frozenset({5, 8, 9, 3, 4, 6})
@@ -114,6 +114,7 @@ class TestSubsetConstruction(unittest.TestCase):
                                'c': d3},
                           d3: {'b': d2,
                                'c': d3}})
+        self.assertEqual(starting_state, d0)
         self.assertEqual(accepting_states, {d1, d2, d3})
 
 
