@@ -6,8 +6,8 @@ class NFA:
 
     def __init__(self):
         self.trans_matrix = {}
-        self.accepting_states = set()
         self.starting_state = None
+        self.accepting_states = set()
         self.alphabet = set()
 
     def add_state(self, state, starting=False, accepting=False):

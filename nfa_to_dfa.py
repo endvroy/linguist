@@ -1,4 +1,5 @@
 from collections import defaultdict
+from dfa import DFA
 
 
 def epsilon_closure(nfa, states):
@@ -84,3 +85,12 @@ def dict_to_dfa_matrix(d: dict):
             matrix[start][char] = end
 
     return matrix
+
+
+def nfa_to_dfa(nfa):
+    trans_matrix, starting_state, accepting_states = relabel_states(*subset_cons(nfa))
+    dfa_matrix = dict_to_dfa_matrix(trans_matrix)
+    return DFA(dfa_matrix,
+               starting_state,
+               accepting_states,
+               nfa.alphabet)

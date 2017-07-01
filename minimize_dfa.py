@@ -1,3 +1,7 @@
+from nfa_to_dfa import dict_to_dfa_matrix
+from dfa import DFA
+
+
 class RevIndex:
     def __init__(self, partitions):
         self.p_map = {}
@@ -51,8 +55,30 @@ def partition_states(dfa):
         new_partitions = set()
         for partition in partitions:
             new_partitions |= split(dfa, rev_index, partition)
-    return partitions
+    return partitions, rev_index
 
 
 def minimize_dfa(dfa):
-    pass
+    _, rev_index = partition_states(dfa)
+
+    # build the transition matrix
+    trans_matrix = {}
+    for start, v in dfa.trans_matrix.items():
+        trans_matrix[rev_index.find_part(start)] = {}
+        for char, end in v.items():
+            if end is not None:
+                trans_matrix[rev_index.find_part(start)][char] = rev_index.find_part(end)
+    new_matrix = dict_to_dfa_matrix(trans_matrix)
+
+    # build the starting state
+    starting_state = rev_index.find_part(dfa.starting_state)
+
+    # build accepting states
+    accepting_states = set()
+    for state in dfa.accepting_states:
+        accepting_states.add(rev_index.find_part(state))
+
+    return DFA(new_matrix,
+               starting_state,
+               accepting_states,
+               dfa.alphabet)
