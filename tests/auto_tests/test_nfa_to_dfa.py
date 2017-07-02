@@ -1,32 +1,14 @@
 from nfa_to_dfa import *
 from nfa import NFA
 import unittest
-from pprint import pprint
-
-
-def test_relabel_states():
-    nfa = build_test_nfa()
-    trans_matrix, starting_state, accepting_states = relabel_states(*subset_cons(nfa))
-    pprint(trans_matrix)
-    print(starting_state)
-    print(accepting_states)
-
-
-def test_nfa_to_dfa():
-    nfa = build_test_nfa()
-    dfa = nfa_to_dfa(nfa)
-    pprint(dfa.trans_matrix)
-    print(dfa.starting_state)
-    print(dfa.accepting_states)
-    print(dfa.alphabet)
 
 
 def build_test_nfa():  # example NFA on page 51
     nfa = NFA()
-    for i in range(1, 9):
+    for i in range(10):
         nfa.add_state(i)
-    nfa.add_state(0, starting=True)
-    nfa.add_state(9, accepting=True)
+    nfa.mark_starting(0)
+    nfa.mark_accepting(9, 1)
 
     nfa.add_transition(0, 1, 'a')
     nfa.add_transition(1, 2, nfa.epsilon)

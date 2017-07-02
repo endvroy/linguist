@@ -2,7 +2,6 @@ from minimize_dfa import *
 from nfa_to_dfa import dict_to_dfa_matrix
 from dfa import DFA
 import unittest
-from pprint import pprint
 
 
 class TestBuilder(unittest.TestCase):
@@ -59,15 +58,6 @@ class TestMinimize(unittest.TestCase):
                           frozenset({1}),
                           frozenset({2, 4})})
         # self.assertEqual(RevIndex(partition).p_map, rev_index.p_map)
-
-
-def test_minimize():
-    dfa = build_test_dfa()
-    min_dfa = minimize_dfa(dfa)
-    pprint(min_dfa.trans_matrix)
-    print(min_dfa.starting_state)
-    print(min_dfa.accepting_states)
-    print(min_dfa.alphabet)
 
 
 if __name__ == '__main__':
