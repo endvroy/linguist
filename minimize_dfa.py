@@ -48,7 +48,7 @@ def split(dfa, rev_index, partition):
 def partition_states(dfa):
     partitions = set()
     new_partitions = {frozenset(dfa.accepting_states),
-                      frozenset(set(dfa.trans_matrix.keys()) - dfa.accepting_states)}
+                      frozenset(set(dfa.trans_matrix.keys()) - set(dfa.accepting_states.keys()))}
     rev_index = RevIndex(new_partitions)
     while new_partitions != partitions:
         partitions = new_partitions
@@ -58,6 +58,7 @@ def partition_states(dfa):
     return partitions, rev_index
 
 
+# todo: test
 def minimize_dfa(dfa):
     _, rev_index = partition_states(dfa)
 
@@ -74,9 +75,11 @@ def minimize_dfa(dfa):
     starting_state = rev_index.find_part(dfa.starting_state)
 
     # build accepting states
-    accepting_states = set()
+    accepting_states = {}
     for state in dfa.accepting_states:
-        accepting_states.add(rev_index.find_part(state))
+        accepting_states[rev_index.find_part(state)] = set()
+    for state in dfa.accepting_states:
+        accepting_states[rev_index.find_part(state)] |= dfa.accepting_states[state]
 
     return DFA(new_matrix,
                starting_state,

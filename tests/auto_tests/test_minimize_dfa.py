@@ -29,7 +29,7 @@ def build_test_dfa():  # example DFA on page 56
                                   4: {'e': 5},
                                   5: {}}),
               0,
-              {3, 5},
+              {3: {42, 233}, 5: {1337}},
               {'f', 'e', 'i'})
     return dfa
 

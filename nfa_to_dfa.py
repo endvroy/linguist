@@ -32,7 +32,7 @@ def next_set(nfa, states, char):
 
 def subset_cons(nfa):
     trans_matrix = {}
-    accepting_states = set()
+    accepting_states = {}
     starting_state = frozenset(epsilon_closure(nfa, {nfa.starting_state}))
     work_list = [starting_state]
 
@@ -46,12 +46,17 @@ def subset_cons(nfa):
 
             if new_states:
                 new_states = frozenset(new_states)
+
+                trans_matrix[states][char] = new_states  # update trans matrix
+
+                accepting_states[new_states] = set()  # update accepting states
                 for state in new_states:
                     if state in nfa.accepting_states:
-                        accepting_states.add(new_states)
+                        accepting_states[new_states].add(nfa.accepting_states[state])
+                if not accepting_states[new_states]:  # not state in the set is an accepting state of the original NFA
+                    del accepting_states[new_states]
 
-                trans_matrix[states][char] = new_states
-                if new_states not in trans_matrix.keys():
+                if new_states not in trans_matrix.keys():  # continue probing
                     work_list.append(new_states)
 
     return trans_matrix, starting_state, accepting_states
@@ -62,13 +67,13 @@ def relabel_states(trans_matrix, starting_state, accepting_states):
     for i, state in enumerate(trans_matrix.keys()):
         name_map[state] = i
     new_matrix = {}
-    new_accepting_states = set()
+    new_accepting_states = {}
     for state in trans_matrix.keys():
         new_matrix[name_map[state]] = {}
         for c, s in trans_matrix[state].items():
             new_matrix[name_map[state]][c] = name_map[s]
     for state in accepting_states:
-        new_accepting_states.add(name_map[state])
+        new_accepting_states[name_map[state]] = accepting_states[state]
 
     return new_matrix, name_map[starting_state], new_accepting_states
 

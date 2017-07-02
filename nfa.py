@@ -45,7 +45,6 @@ class NFA:
             self.alphabet.add(char)
 
 
-# todo: test
 def cat(nfa_list):
     cat_nfa = NFA()
     for i, nfa in enumerate(nfa_list):  # add everything to cat_nfa

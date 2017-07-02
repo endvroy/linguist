@@ -64,7 +64,9 @@ class TestSubsetConstruction(unittest.TestCase):
                           d3: {'b': d2,
                                'c': d3}})
         self.assertEqual(starting_state, d0)
-        self.assertEqual(accepting_states, {d1, d2, d3})
+        self.assertEqual(accepting_states, {d1: {1},
+                                            d2: {1},
+                                            d3: {1}})
 
 
 if __name__ == '__main__':
