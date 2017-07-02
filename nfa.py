@@ -51,8 +51,9 @@ def cat(nfa_list):
     for i, nfa in enumerate(nfa_list):  # add everything to cat_nfa
         for start, d in nfa.trans_matrix.items():
             cat_nfa.add_state((i, start))
-            for char, end in d.items():
-                cat_nfa.add_transition((i, start), (i, end), char)
+            for char, end_set in d.items():
+                for end in end_set:
+                    cat_nfa.add_transition((i, start), (i, end), char)
         cat_nfa.alphabet |= nfa.alphabet
 
     for i in range(len(nfa_list) - 1):  # link these nfa
@@ -64,7 +65,7 @@ def cat(nfa_list):
                                    cat_nfa.epsilon)
 
     cat_nfa.mark_starting((0, nfa_list[0].starting_state))
-    for state, category in nfa_list[-1].accepting_states:
+    for state, category in nfa_list[-1].accepting_states.items():
         cat_nfa.mark_accepting((len(nfa_list) - 1, state), category)
 
     return cat_nfa
@@ -75,10 +76,11 @@ def alt(nfa_list):
     for i, nfa in enumerate(nfa_list):
         for start, d in nfa.trans_matrix.items():
             alt_nfa.add_state((i, start))
-            for char, end in d.items():
-                alt_nfa.add_transition((i, start), (i, end), char)
+            for char, end_set in d.items():
+                for end in end_set:
+                    alt_nfa.add_transition((i, start), (i, end), char)
         alt_nfa.alphabet |= nfa.alphabet
-        for state, category in nfa.accepting_states:
+        for state, category in nfa.accepting_states.items():
             alt_nfa.mark_accepting((i, state), category)
 
     alt_nfa.add_state(1)  # starting state
