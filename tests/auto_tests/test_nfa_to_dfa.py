@@ -68,6 +68,57 @@ class TestSubsetConstruction(unittest.TestCase):
                                             d2: {1},
                                             d3: {1}})
 
+    def test_ambiguous_subcons(self):
+        nfa = NFA()
+        for i in range(1, 7):
+            nfa.add_state(i)
+        nfa.add_transition(1, 2, 'i')
+        nfa.add_transition(2, 3, 'f')
+        nfa.add_transition(1, 4, 'i')
+        nfa.add_transition(1, 5, 'a')
+        nfa.add_transition(1, 6, 'f')
+        for i in range(4, 7):
+            for char in 'iaf':
+                nfa.add_transition(i, i, char)
+        nfa.mark_starting(1)
+        nfa.mark_accepting(3, 'if')  # if
+        for i in range(4, 7):
+            nfa.mark_accepting(i, 'id')  # id
+
+        trans_matrix, starting_state, accepting_states = subset_cons(nfa)
+        d1 = frozenset({1})
+        d2 = frozenset({2, 4})
+        d3 = frozenset({3, 4})
+        d4 = frozenset({4})
+        d5 = frozenset({5})
+        d6 = frozenset({6})
+        self.assertEqual(trans_matrix,
+                         {d1: {'a': d5,
+                               'i': d2,
+                               'f': d6},
+                          d2: {'a': d4,
+                               'i': d4,
+                               'f': d3},
+                          d3: {'a': d4,
+                               'i': d4,
+                               'f': d4},
+                          d4: {'a': d4,
+                               'i': d4,
+                               'f': d4},
+                          d5: {'a': d5,
+                               'i': d5,
+                               'f': d5},
+                          d6: {'a': d6,
+                               'i': d6,
+                               'f': d6},
+                          })
+        self.assertEqual(starting_state, d1)
+        self.assertEqual(accepting_states, {d2: {'id'},
+                                            d3: {'if', 'id'},
+                                            d4: {'id'},
+                                            d5: {'id'},
+                                            d6: {'id'}})
+
 
 if __name__ == '__main__':
     unittest.main()

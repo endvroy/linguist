@@ -45,7 +45,18 @@ class NFA:
             self.alphabet.add(char)
 
 
+def atom(char, category):
+    nfa = NFA()
+    nfa.add_state(0)
+    nfa.add_state(1)
+    nfa.add_transition(0, 1, char)
+    nfa.mark_starting(0)
+    nfa.mark_accepting(1, category)
+    return nfa
+
+
 def cat(nfa_list):
+    nfa_list = list(nfa_list)
     cat_nfa = NFA()
     for i, nfa in enumerate(nfa_list):  # add everything to cat_nfa
         for start, d in nfa.trans_matrix.items():
@@ -71,6 +82,7 @@ def cat(nfa_list):
 
 
 def alt(nfa_list):
+    nfa_list = list(nfa_list)
     alt_nfa = NFA()
     for i, nfa in enumerate(nfa_list):
         for start, d in nfa.trans_matrix.items():

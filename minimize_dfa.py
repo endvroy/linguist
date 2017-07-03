@@ -58,7 +58,6 @@ def partition_states(dfa):
     return partitions, rev_index
 
 
-# todo: test
 def minimize_dfa(dfa):
     _, rev_index = partition_states(dfa)
 
