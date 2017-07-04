@@ -14,7 +14,7 @@ class TestScanner(unittest.TestCase):
         w = alt([atom(x, 2) for x in 'aif'])
         nfa2 = cat([w, closure(w)])
         nfa = alt([nfa1, nfa2])
-        dfa = nfa_to_dfa(nfa)
+        dfa = nfa_to_dfa(nfa, category_info)
         min_dfa = minimize_dfa(dfa)
         scanner = Scanner(min_dfa, category_info)
         tokens = scanner.tokens('if')
@@ -34,15 +34,16 @@ class TestScanner(unittest.TestCase):
         nfa1 = cat([atom('i', -1), atom('f', 1)])
         w = alt([atom(chr(x), 2) for x in range(ord('a'), ord('z') + 1)])
         nfa2 = cat([w, closure(w)])
-        nfa3 = closure(atom(' ', 3))
+        space = atom(' ', 3)
+        nfa3 = cat([space, closure(space)])
         nfa = alt([nfa0, nfa1, nfa2, nfa3])
-        dfa = nfa_to_dfa(nfa)
+        dfa = nfa_to_dfa(nfa, category_info)
         min_dfa = minimize_dfa(dfa)
         scanner = Scanner(min_dfa, category_info)
-        tokens = scanner.tokens('if var r31')
+        tokens = scanner.tokens('if  var r31')
         self.assertEqual(list(tokens),
                          [(1, 'if'),
-                          (3, ' '),
+                          (3, '  '),
                           (2, 'var'),
                           (3, ' '),
                           (0, 'r31')])

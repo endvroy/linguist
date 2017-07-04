@@ -1,4 +1,5 @@
 from collections import defaultdict
+import copy
 
 
 class NFA:
@@ -12,7 +13,7 @@ class NFA:
 
     def copy(self):
         nfa = NFA()
-        nfa.trans_matrix = self.trans_matrix.copy()
+        nfa.trans_matrix = copy.deepcopy(self.trans_matrix)
         nfa.starting_state = self.starting_state
         nfa.accepting_states = self.accepting_states.copy()
         nfa.alphabet = self.alphabet.copy()

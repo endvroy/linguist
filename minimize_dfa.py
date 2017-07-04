@@ -1,3 +1,4 @@
+from collections import defaultdict
 from nfa_to_dfa import dict_to_dfa_matrix
 from dfa import DFA
 
@@ -45,10 +46,19 @@ def split(dfa, rev_index, partition):
         return {frozenset(first_set)}
 
 
+def partition_acc_states(acc_states):
+    rev_map = defaultdict(set)
+    for state, category in acc_states.items():
+        rev_map[category].add(state)
+    return frozenset(frozenset(x) for x in rev_map.values())
+
+
 def partition_states(dfa):
     partitions = set()
-    new_partitions = {frozenset(dfa.accepting_states),
-                      frozenset(set(dfa.trans_matrix.keys()) - set(dfa.accepting_states.keys()))}
+    new_partitions = partition_acc_states(dfa.accepting_states)
+    non_acc_states = frozenset(set(dfa.trans_matrix.keys()) - set(dfa.accepting_states.keys()))
+    if non_acc_states:
+        new_partitions |= {non_acc_states}
     rev_index = RevIndex(new_partitions)
     while new_partitions != partitions:
         partitions = new_partitions
@@ -78,7 +88,7 @@ def minimize_dfa(dfa):
     for state in dfa.accepting_states:
         accepting_states[rev_index.find_part(state)] = set()
     for state in dfa.accepting_states:
-        accepting_states[rev_index.find_part(state)] |= dfa.accepting_states[state]
+        accepting_states[rev_index.find_part(state)] = dfa.accepting_states[state]
 
     return DFA(new_matrix,
                starting_state,

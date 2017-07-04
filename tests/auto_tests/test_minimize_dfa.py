@@ -29,8 +29,27 @@ def build_test_dfa():  # example DFA on page 56
                                   4: {'e': 5},
                                   5: {}}),
               0,
-              {3: {42, 233}, 5: {1337}},
+              {3: 42, 5: 42},
               {'f', 'e', 'i'})
+    return dfa
+
+
+def build_test_dfa_2():
+    dfa = DFA(dict_to_dfa_matrix({0: {'a': 2,
+                                      'i': 1,
+                                      'f': 2},
+                                  1: {'a': 2,
+                                      'i': 2,
+                                      'f': 3},
+                                  2: {'a': 2,
+                                      'i': 2,
+                                      'f': 2},
+                                  3: {'a': 2,
+                                      'i': 2,
+                                      'f': 2}}),
+              0,
+              {1: 'id', 2: 'id', 3: 'if'},
+              {'a', 'i', 'f'})
     return dfa
 
 
@@ -58,6 +77,16 @@ class TestMinimize(unittest.TestCase):
                           frozenset({1}),
                           frozenset({2, 4})})
         # self.assertEqual(RevIndex(partition).p_map, rev_index.p_map)
+
+    def test_partition_2(self):
+        dfa = build_test_dfa_2()
+
+        partition, rev_index = partition_states(dfa)
+        self.assertEqual(partition,
+                         {frozenset({0}),
+                          frozenset({1}),
+                          frozenset({2}),
+                          frozenset({3})})
 
 
 if __name__ == '__main__':

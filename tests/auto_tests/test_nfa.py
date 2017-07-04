@@ -74,7 +74,7 @@ class TestCopy(unittest.TestCase):
         copy_nfa.add_transition(1, 1337, 'leet')
         copy_nfa.mark_starting(42)
         copy_nfa.mark_accepting(1337, 404)
-        self.assertEqual(nfa.trans_matrix[1][1337], set())
+        self.assertEqual(nfa.trans_matrix[1]['leet'], set())
         self.assertFalse(42 in nfa.trans_matrix)
         self.assertEqual(nfa.starting_state, 0)
         self.assertFalse(1337 in nfa.accepting_states)
