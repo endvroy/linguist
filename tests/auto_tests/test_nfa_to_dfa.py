@@ -50,7 +50,7 @@ class TestSubsetConstruction(unittest.TestCase):
 
     def test_subset_cons(self):
         nfa = build_test_nfa()
-        trans_matrix, starting_state, accepting_states = subset_cons(nfa)
+        trans_matrix, starting_state, accepting_states = subset_cons(nfa, {1: CategoryInfo('dummy', 0)})
         d0 = frozenset({0})
         d1 = frozenset({1, 2, 3, 4, 6, 9})
         d2 = frozenset({5, 8, 9, 3, 4, 6})
@@ -64,9 +64,9 @@ class TestSubsetConstruction(unittest.TestCase):
                           d3: {'b': d2,
                                'c': d3}})
         self.assertEqual(starting_state, d0)
-        self.assertEqual(accepting_states, {d1: {1},
-                                            d2: {1},
-                                            d3: {1}})
+        self.assertEqual(accepting_states, {d1: 1,
+                                            d2: 1,
+                                            d3: 1})
 
     def test_ambiguous_subcons(self):
         nfa = NFA()
@@ -85,7 +85,8 @@ class TestSubsetConstruction(unittest.TestCase):
         for i in range(4, 7):
             nfa.mark_accepting(i, 'id')  # id
 
-        trans_matrix, starting_state, accepting_states = subset_cons(nfa)
+        trans_matrix, starting_state, accepting_states = subset_cons(nfa, {'if': CategoryInfo('IF', 0),
+                                                                           'id': CategoryInfo('ID', -1)})
         d1 = frozenset({1})
         d2 = frozenset({2, 4})
         d3 = frozenset({3, 4})
@@ -113,11 +114,11 @@ class TestSubsetConstruction(unittest.TestCase):
                                'f': d6},
                           })
         self.assertEqual(starting_state, d1)
-        self.assertEqual(accepting_states, {d2: {'id'},
-                                            d3: {'if', 'id'},
-                                            d4: {'id'},
-                                            d5: {'id'},
-                                            d6: {'id'}})
+        self.assertEqual(accepting_states, {d2: 'id',
+                                            d3: 'if',
+                                            d4: 'id',
+                                            d5: 'id',
+                                            d6: 'id'})
 
 
 if __name__ == '__main__':

@@ -1,12 +1,3 @@
-class CategoryInfo:
-    def __init__(self, name, priority):
-        self.name = name
-        self.priority = priority
-
-    def __repr__(self):
-        return f'CategoryInfo({self.name}, {self.priority})'
-
-
 class Scanner:
     def __init__(self, dfa, category_info):
         self.dfa = dfa

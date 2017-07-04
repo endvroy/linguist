@@ -30,9 +30,9 @@ def next_set(nfa, states, char):
     return next_states
 
 
-def subset_cons(nfa):
+def subset_cons(nfa, category_info):
     trans_matrix = {}
-    accepting_states = {}
+
     starting_state = frozenset(epsilon_closure(nfa, {nfa.starting_state}))
     work_list = [starting_state]
 
@@ -46,18 +46,21 @@ def subset_cons(nfa):
 
             if new_states:
                 new_states = frozenset(new_states)
-
                 trans_matrix[states][char] = new_states  # update trans matrix
-
-                accepting_states[new_states] = set()  # update accepting states
-                for state in new_states:
-                    if state in nfa.accepting_states:
-                        accepting_states[new_states].add(nfa.accepting_states[state])
-                if not accepting_states[new_states]:  # not state in the set is an accepting state of the original NFA
-                    del accepting_states[new_states]
-
                 if new_states not in trans_matrix.keys():  # continue probing
                     work_list.append(new_states)
+
+    accepting_states = {}  # construct accepting states
+    for states in trans_matrix:
+        acc_state = None
+        for state in states:
+            if state in nfa.accepting_states:
+                if acc_state is None or \
+                                category_info[nfa.accepting_states[state]].priority > category_info[
+                            nfa.accepting_states[acc_state]].priority:
+                    acc_state = state
+        if acc_state:
+            accepting_states[states] = nfa.accepting_states[acc_state]
 
     return trans_matrix, starting_state, accepting_states
 
@@ -92,10 +95,19 @@ def dict_to_dfa_matrix(d: dict):
     return matrix
 
 
-def nfa_to_dfa(nfa):
-    trans_matrix, starting_state, accepting_states = relabel_states(*subset_cons(nfa))
+def nfa_to_dfa(nfa, category_info):
+    trans_matrix, starting_state, accepting_states = relabel_states(*subset_cons(nfa, category_info))
     dfa_matrix = dict_to_dfa_matrix(trans_matrix)
     return DFA(dfa_matrix,
                starting_state,
                accepting_states,
                nfa.alphabet)
+
+
+class CategoryInfo:
+    def __init__(self, name, priority):
+        self.name = name
+        self.priority = priority
+
+    def __repr__(self):
+        return f'CategoryInfo({self.name}, {self.priority})'

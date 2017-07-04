@@ -1,8 +1,9 @@
-from scanner import *
+import unittest
+
+from minimize_dfa import *
 from nfa import *
 from nfa_to_dfa import *
-from minimize_dfa import *
-import unittest
+from scanner import *
 
 
 class TestScanner(unittest.TestCase):
