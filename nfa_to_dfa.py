@@ -1,4 +1,5 @@
 from collections import defaultdict
+
 from dfa import DFA
 
 
@@ -102,12 +103,3 @@ def nfa_to_dfa(nfa, category_info):
                starting_state,
                accepting_states,
                nfa.alphabet)
-
-
-class CategoryInfo:
-    def __init__(self, name, priority):
-        self.name = name
-        self.priority = priority
-
-    def __repr__(self):
-        return f'CategoryInfo({self.name}, {self.priority})'

@@ -1,6 +1,8 @@
-from nfa_to_dfa import *
-from nfa import NFA
 import unittest
+
+from dfa import CategoryInfo
+from nfa import NFA
+from nfa_to_dfa import *
 
 
 def build_test_nfa():  # example NFA on page 51

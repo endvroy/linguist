@@ -1,5 +1,6 @@
 import unittest
 
+from dfa import CategoryInfo
 from minimize_dfa import *
 from nfa import *
 from nfa_to_dfa import *
