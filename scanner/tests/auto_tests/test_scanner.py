@@ -1,10 +1,10 @@
 import unittest
 
-from dfa import CategoryInfo
-from minimize_dfa import *
-from nfa import *
-from nfa_to_dfa import *
-from scanner import *
+from scanner.dfa import CategoryInfo
+from scanner.minimize_dfa import *
+from scanner.nfa import *
+from scanner.nfa_to_dfa import *
+from scanner.scanner import *
 
 
 class TestScanner(unittest.TestCase):

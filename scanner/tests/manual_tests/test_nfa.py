@@ -1,5 +1,5 @@
-from nfa import *
-from tests.auto_tests.test_nfa_to_dfa import build_test_nfa
+from scanner.nfa import *
+from scanner.tests.auto_tests.test_nfa_to_dfa import build_test_nfa
 from pprint import pprint
 
 

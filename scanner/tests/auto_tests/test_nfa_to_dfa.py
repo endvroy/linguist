@@ -1,8 +1,8 @@
 import unittest
 
-from dfa import CategoryInfo
-from nfa import NFA
-from nfa_to_dfa import *
+from scanner.dfa import CategoryInfo
+from scanner.nfa import NFA
+from scanner.nfa_to_dfa import *
 
 
 def build_test_nfa():  # example NFA on page 51

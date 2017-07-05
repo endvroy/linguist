@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from dfa import DFA
+from scanner.dfa import DFA
 
 
 def epsilon_closure(nfa, states):

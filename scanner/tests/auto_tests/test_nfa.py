@@ -1,7 +1,7 @@
 import unittest
 
-from nfa import NFA
-from tests.auto_tests.test_nfa_to_dfa import build_test_nfa
+from scanner.nfa import NFA
+from scanner.tests.auto_tests.test_nfa_to_dfa import build_test_nfa
 
 
 class TestAddState(unittest.TestCase):

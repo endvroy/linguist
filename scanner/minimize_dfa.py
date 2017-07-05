@@ -1,6 +1,6 @@
 from collections import defaultdict
-from nfa_to_dfa import dict_to_dfa_matrix
-from dfa import DFA
+from scanner.nfa_to_dfa import dict_to_dfa_matrix
+from scanner.dfa import DFA
 
 
 class RevIndex:

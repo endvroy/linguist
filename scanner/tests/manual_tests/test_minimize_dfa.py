@@ -1,5 +1,5 @@
-from minimize_dfa import *
-from tests.auto_tests.test_minimize_dfa import build_test_dfa
+from scanner.minimize_dfa import *
+from scanner.tests.auto_tests.test_minimize_dfa import build_test_dfa
 from pprint import pprint
 
 
