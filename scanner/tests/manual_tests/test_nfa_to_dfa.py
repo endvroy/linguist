@@ -1,4 +1,5 @@
 from scanner.nfa_to_dfa import *
+from scanner.dfa import CategoryInfo
 from scanner.tests.auto_tests.test_nfa_to_dfa import build_test_nfa
 from pprint import pprint
 
