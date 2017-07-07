@@ -26,8 +26,23 @@ class TestRuleSet(unittest.TestCase):
                          {expr: [d(nt(term), nt(expr_prime))],
                           expr_prime: [d(t('+'), nt(term), nt(expr_prime)),
                                        d(t('-'), nt(term), nt(expr_prime)),
-                                       d()],
+                                       d(t(epsilon))],
                           term: []})
 
-    if __name__ == '__main__':
-        unittest.main()
+    def test_elim_indir_lr(self):
+        rule_set = RuleSet()  # example grammar on Dragon Book pp.213
+        S, A = rule_set.new_nt(2)
+        rule_set.add_rule(S, d(nt(A), t('a')))
+        rule_set.add_rule(S, d(t('b')))
+        rule_set.add_rule(A, d(nt(A), t('c')))
+        rule_set.add_rule(A, d(nt(S), t('d')))
+        rule_set.elim_indir_lr()
+        self.assertEqual(rule_set.nt_rules, {S: [d(nt(A), t('a')),
+                                                 d(t('b'))],
+                                             A: [d(nt(A), t('c')),
+                                                 d(nt(A), t('a'), t('d')),
+                                                 d(t('b'), t('d'))]})
+
+
+if __name__ == '__main__':
+    unittest.main()
