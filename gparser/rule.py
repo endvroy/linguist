@@ -4,13 +4,13 @@ epsilon = None
 class RuleSet:
     def __init__(self):
         self.nt_rules = {}
-        self._nt_index = 0
+        self._next_ntid = 0
 
     def new_nt(self, num):
-        specifiers = list(range(self._nt_index, self._nt_index + num))
-        for i in range(self._nt_index, self._nt_index + num):
+        specifiers = list(range(self._next_ntid, self._next_ntid + num))
+        for i in range(self._next_ntid, self._next_ntid + num):
             self.nt_rules[i] = []
-        self._nt_index += num
+        self._next_ntid += num
         return specifiers
 
     def add_rule(self, ntid, derives):
@@ -49,6 +49,40 @@ class RuleSet:
                                 new_derives.append(end_derived)
                         self.nt_rules[end_nt] = new_derives
                         break
+
+    def calc_first_sets(self):
+        first_sets = {ntid: set() for ntid in self.nt_rules}
+
+        def first(x):
+            if x[0] == 't':
+                return {x[1]}
+            else:
+                return first_sets[x[1]]
+
+        changed = True
+        while changed:
+            changed = False
+            for ntid, derives_list in self.nt_rules.items():
+                for derives in derives_list:
+                    trailer = set()
+                    for x in derives:
+                        trailer |= (first(x) - {epsilon})
+                        if epsilon not in first(x):
+                            break
+                    else:
+                        if epsilon in first(derives[-1]):
+                            trailer.add(epsilon)
+
+                    new_set = first_sets[ntid] | trailer
+                    if len(new_set) != len(first_sets[ntid]):
+                        changed = True
+                        first_sets[ntid] = new_set
+
+        return first_sets
+
+    # todo: fill in
+    def calc_follow_sets(self, first_sets):
+        pass
 
 
 def nt(ntid):

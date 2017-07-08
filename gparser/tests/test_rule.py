@@ -21,7 +21,7 @@ class TestRuleSet(unittest.TestCase):
         rule_set.add_rule(expr, d(nt(expr), t('-'), nt(term)))
         rule_set.add_rule(expr, d(nt(term)))
         rule_set.rewrite_rule(expr)
-        expr_prime = rule_set._nt_index - 1
+        expr_prime = rule_set._next_ntid - 1
         self.assertEqual(rule_set.nt_rules,
                          {expr: [d(nt(term), nt(expr_prime))],
                           expr_prime: [d(t('+'), nt(term), nt(expr_prime)),
@@ -42,6 +42,28 @@ class TestRuleSet(unittest.TestCase):
                                              A: [d(nt(A), t('c')),
                                                  d(nt(A), t('a'), t('d')),
                                                  d(t('b'), t('d'))]})
+
+    def test_first_sets(self):  # example grammar on EC pp.101
+        rule_set = RuleSet()
+        expr, expr_prime, term, term_prime, factor = rule_set.new_nt(5)
+        rule_set.add_rule(expr, d(nt(term), nt(expr_prime)))
+        rule_set.add_rule(expr_prime, d(t('+'), nt(term), nt(expr_prime)))
+        rule_set.add_rule(expr_prime, d(t('-'), nt(term), nt(expr_prime)))
+        rule_set.add_rule(expr_prime, d(t(epsilon)))
+        rule_set.add_rule(term, d(nt(factor), nt(term_prime)))
+        rule_set.add_rule(term_prime, d(t('*'), nt(factor), nt(term_prime)))
+        rule_set.add_rule(term_prime, d(t('/'), nt(factor), nt(term_prime)))
+        rule_set.add_rule(term_prime, d(t(epsilon)))
+        rule_set.add_rule(factor, d(t('('), nt(expr), t(')')))
+        rule_set.add_rule(factor, d(t('num')))
+        rule_set.add_rule(factor, d(t('name')))
+        first_sets = rule_set.calc_first_sets()
+        # answer on EC pp.105
+        self.assertEqual(first_sets, {expr: {'(', 'name', 'num'},
+                                      expr_prime: {'+', '-', epsilon},
+                                      term: {'(', 'name', 'num'},
+                                      term_prime: {'*', '/', epsilon},
+                                      factor: {'(', 'name', 'num'}})
 
 
 if __name__ == '__main__':
