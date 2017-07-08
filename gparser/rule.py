@@ -1,9 +1,11 @@
 epsilon = None
+eof = -1
 
 
 class RuleSet:
     def __init__(self):
         self.nt_rules = {}
+        self.goal = None
         self._next_ntid = 0
 
     def new_nt(self, num):
@@ -12,6 +14,9 @@ class RuleSet:
             self.nt_rules[i] = []
         self._next_ntid += num
         return specifiers
+
+    def mark_goal(self, ntid):
+        self.goal = ntid
 
     def add_rule(self, ntid, derives):
         self.nt_rules[ntid].append(derives)
@@ -80,9 +85,37 @@ class RuleSet:
 
         return first_sets
 
-    # todo: fill in
     def calc_follow_sets(self, first_sets):
-        pass
+        def first(x):
+            if x[0] == 't':
+                return {x[1]}
+            else:
+                return first_sets[x[1]]
+
+        follow_sets = {ntid: set() for ntid in self.nt_rules}
+        follow_sets[self.goal].add(eof)
+
+        changed = True
+        while changed:
+            changed = False
+            for ntid, derives_list in self.nt_rules.items():
+                for derives in derives_list:
+                    trailer = follow_sets[ntid].copy()
+                    for x in reversed(derives):
+                        if x[0] == 'nt':
+                            new_set = follow_sets[x[1]] | trailer
+                            if len(new_set) != len(follow_sets[x[1]]):
+                                changed = True
+                                follow_sets[x[1]] = new_set
+
+                            if epsilon in first(x):
+                                trailer |= (first(x) - {epsilon})
+                            else:
+                                trailer = first(x)
+                        else:
+                            trailer = first(x)
+
+        return follow_sets
 
 
 def nt(ntid):

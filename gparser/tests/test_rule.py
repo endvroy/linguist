@@ -65,6 +65,30 @@ class TestRuleSet(unittest.TestCase):
                                       term_prime: {'*', '/', epsilon},
                                       factor: {'(', 'name', 'num'}})
 
+    def test_follow_sets(self):
+        rule_set = RuleSet()
+        expr, expr_prime, term, term_prime, factor = rule_set.new_nt(5)
+        rule_set.mark_goal(expr)
+        rule_set.add_rule(expr, d(nt(term), nt(expr_prime)))
+        rule_set.add_rule(expr_prime, d(t('+'), nt(term), nt(expr_prime)))
+        rule_set.add_rule(expr_prime, d(t('-'), nt(term), nt(expr_prime)))
+        rule_set.add_rule(expr_prime, d(t(epsilon)))
+        rule_set.add_rule(term, d(nt(factor), nt(term_prime)))
+        rule_set.add_rule(term_prime, d(t('*'), nt(factor), nt(term_prime)))
+        rule_set.add_rule(term_prime, d(t('/'), nt(factor), nt(term_prime)))
+        rule_set.add_rule(term_prime, d(t(epsilon)))
+        rule_set.add_rule(factor, d(t('('), nt(expr), t(')')))
+        rule_set.add_rule(factor, d(t('num')))
+        rule_set.add_rule(factor, d(t('name')))
+        first_sets = rule_set.calc_first_sets()
+        follow_sets = rule_set.calc_follow_sets(first_sets)
+        # answer on EC pp.106
+        self.assertEqual(follow_sets, {expr: {')', eof},
+                                       expr_prime: {')', eof},
+                                       term: {'+', '-', ')', eof},
+                                       term_prime: {'+', '-', ')', eof},
+                                       factor: {'+', '-', '*', '/', ')', eof}})
+
 
 if __name__ == '__main__':
     unittest.main()
