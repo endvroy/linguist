@@ -58,11 +58,7 @@ class RuleSet:
     def calc_first_sets(self):
         first_sets = {ntid: set() for ntid in self.nt_rules}
 
-        def first(x):
-            if x[0] == 't':
-                return {x[1]}
-            else:
-                return first_sets[x[1]]
+        first = first_fn(first_sets)
 
         changed = True
         while changed:
@@ -86,11 +82,7 @@ class RuleSet:
         return first_sets
 
     def calc_follow_sets(self, first_sets):
-        def first(x):
-            if x[0] == 't':
-                return {x[1]}
-            else:
-                return first_sets[x[1]]
+        first = first_fn(first_sets)
 
         follow_sets = {ntid: set() for ntid in self.nt_rules}
         follow_sets[self.goal].add(eof)
@@ -117,6 +109,35 @@ class RuleSet:
 
         return follow_sets
 
+    def calc_first_set_seq(self, first_sets, d_seq):
+        first = first_fn(first_sets)
+        f_set = set()
+        for symbol in d_seq:
+            f_set |= first(symbol)
+            if epsilon not in first(symbol):
+                f_set -= {epsilon}
+                break
+        return f_set
+
+    def calc_parse_table(self):
+        first_sets = self.calc_first_sets()
+        follow_sets = self.calc_follow_sets(first_sets)
+        parse_table = {ntid: {} for ntid in self.nt_rules}
+        for ntid, derives_list in self.nt_rules.items():
+            for derives in derives_list:
+                first_set_seq = self.calc_first_set_seq(first_sets, derives)
+                if epsilon in first_set_seq:
+                    first_plus_set = first_set_seq | follow_sets[ntid]
+                else:
+                    first_plus_set = first_set_seq
+                for category in first_plus_set:
+                    if category not in parse_table[ntid]:
+                        parse_table[ntid][category] = derives
+                    else:
+                        raise RuntimeError(f'conflict lookahead rules: {parse_table[ntid][category]}, {derives}')
+
+        return parse_table
+
 
 def nt(ntid):
     return 'nt', ntid
@@ -128,3 +149,13 @@ def t(category):
 
 def d(*seq):  # derived sequence
     return tuple(seq)
+
+
+def first_fn(first_sets):
+    def first(x):
+        if x[0] == 't':
+            return {x[1]}
+        else:
+            return first_sets[x[1]]
+
+    return first

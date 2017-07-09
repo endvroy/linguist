@@ -89,6 +89,49 @@ class TestRuleSet(unittest.TestCase):
                                        term_prime: {'+', '-', ')', eof},
                                        factor: {'+', '-', '*', '/', ')', eof}})
 
+    def test_parse_table(self):
+        rule_set = RuleSet()  # example grammar on DB pp.217
+        E, Ep, T, Tp, F = rule_set.new_nt(5)
+        rule_set.add_rule(E, d(nt(T), nt(Ep)))
+        rule_set.add_rule(Ep, d(t('+'), nt(T), nt(Ep)))
+        rule_set.add_rule(Ep, d(t(epsilon)))
+        rule_set.add_rule(T, d(nt(F), nt(Tp)))
+        rule_set.add_rule(Tp, d(t('*'), nt(F), nt(Tp)))
+        rule_set.add_rule(Tp, d(t(epsilon)))
+        rule_set.add_rule(F, d(t('('), nt(E), t(')')))
+        rule_set.add_rule(F, d(t('id')))
+        rule_set.mark_goal(E)
+        parse_table = rule_set.calc_parse_table()
+        self.assertEqual(parse_table,  # answer on DB pp.225
+                         {E: {'id': d(nt(T), nt(Ep)),
+                              '(': d(nt(T), nt(Ep))},
+                          Ep: {'+': d(t('+'), nt(T), nt(Ep)),
+                               ')': d(t(epsilon)),
+                               eof: d(t(epsilon)),
+                               epsilon: d(t(epsilon))},
+                          T: {'id': d(nt(F), nt(Tp)),
+                              '(': d(nt(F), nt(Tp))},
+                          Tp: {'+': d(t(epsilon)),
+                               '*': d(t('*'), nt(F), nt(Tp)),
+                               ')': d(t(epsilon)),
+                               eof: d(t(epsilon)),
+                               epsilon: d(t(epsilon))},
+                          F: {'id': d(t('id')),
+                              '(': d(t('('), nt(E), t(')'))}
+                          })
+
+    def test_conflict_parse_table(self):
+        rule_set = RuleSet()  # example grammar on DB pp.225
+        S, Sp, E = rule_set.new_nt(3)
+        rule_set.add_rule(S, d(t('i'), nt(E), t('t'), nt(S), nt(Sp)))
+        rule_set.add_rule(S, d(t('a')))
+        rule_set.add_rule(S, d(t('e'), nt(S)))
+        rule_set.add_rule(S, d(t(epsilon)))
+        rule_set.add_rule(E, d(t('b')))
+        rule_set.mark_goal(S)
+        with self.assertRaises(RuntimeError):
+            rule_set.calc_parse_table()
+
 
 if __name__ == '__main__':
     unittest.main()
