@@ -1,4 +1,5 @@
 from collections import defaultdict
+from metachar import epsilon
 import copy
 
 
@@ -42,7 +43,7 @@ class NFA:
         #     raise ValueError(f'end state {end} not in NFA')
         # else:
         self.trans_matrix[begin][char].add(end)
-        if char != self.epsilon:
+        if char != epsilon:
             self.alphabet.add(char)
 
 
@@ -73,7 +74,7 @@ def cat(nfa_list):
         for state in this.accepting_states:
             cat_nfa.add_transition((i, state),
                                    (i + 1, next_.starting_state),
-                                   cat_nfa.epsilon)
+                                   epsilon)
 
     cat_nfa.mark_starting((0, nfa_list[0].starting_state))
     for state, category in nfa_list[-1].accepting_states.items():
@@ -99,7 +100,7 @@ def alt(nfa_list):
     for i, nfa in enumerate(nfa_list):
         alt_nfa.add_transition(1,
                                (i, nfa.starting_state),
-                               alt_nfa.epsilon)
+                               epsilon)
 
     alt_nfa.mark_starting(1)
 
@@ -111,8 +112,8 @@ def closure(nfa: NFA):
     for state in c_nfa.accepting_states:
         c_nfa.add_transition(c_nfa.starting_state,
                              state,
-                             c_nfa.epsilon)
+                             epsilon)
         c_nfa.add_transition(state,
                              c_nfa.starting_state,
-                             c_nfa.epsilon)
+                             epsilon)
     return c_nfa

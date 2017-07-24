@@ -1,5 +1,5 @@
 from collections import defaultdict
-
+from metachar import epsilon
 from scanner.dfa import DFA
 
 
@@ -10,7 +10,7 @@ def epsilon_closure(nfa, states):
     while True:
         new_working_set = set()
         for s in working_set:
-            for new_state in nfa.trans_matrix[s][nfa.epsilon]:
+            for new_state in nfa.trans_matrix[s][epsilon]:
                 if new_state not in closure:
                     closure.add(new_state)
                     new_working_set.add(new_state)

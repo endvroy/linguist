@@ -2,6 +2,7 @@ from graphviz import Digraph
 from scanner.nfa import NFA
 from scanner.dfa import DFA
 from scanner.nfa_to_dfa import dict_to_dfa_matrix
+from metachar import epsilon
 import os
 
 
@@ -13,17 +14,17 @@ def build_test_nfa():  # example NFA on EC pp.51
     nfa.mark_accepting(9, 1)
 
     nfa.add_transition(0, 1, 'a')
-    nfa.add_transition(1, 2, nfa.epsilon)
-    nfa.add_transition(2, 9, nfa.epsilon)
-    nfa.add_transition(2, 3, nfa.epsilon)
-    nfa.add_transition(3, 4, nfa.epsilon)
-    nfa.add_transition(3, 6, nfa.epsilon)
+    nfa.add_transition(1, 2, epsilon)
+    nfa.add_transition(2, 9, epsilon)
+    nfa.add_transition(2, 3, epsilon)
+    nfa.add_transition(3, 4, epsilon)
+    nfa.add_transition(3, 6, epsilon)
     nfa.add_transition(4, 5, 'b')
-    nfa.add_transition(5, 8, nfa.epsilon)
+    nfa.add_transition(5, 8, epsilon)
     nfa.add_transition(6, 7, 'c')
-    nfa.add_transition(7, 8, nfa.epsilon)
-    nfa.add_transition(8, 3, nfa.epsilon)
-    nfa.add_transition(8, 9, nfa.epsilon)
+    nfa.add_transition(7, 8, epsilon)
+    nfa.add_transition(8, 3, epsilon)
+    nfa.add_transition(8, 9, epsilon)
 
     return nfa
 
@@ -86,7 +87,10 @@ def draw_nfa(nfa, name):
     for start, v in nfa.trans_matrix.items():
         for char, end_set in v.items():
             for end in end_set:
-                g.edge(str(start), str(end), label=char)
+                if char == epsilon:
+                    g.edge(str(start), str(end), label='eps')
+                else:
+                    g.edge(str(start), str(end), label=char)
 
     for state in nfa.accepting_states:
         g.node(str(state), shape='doublecircle')

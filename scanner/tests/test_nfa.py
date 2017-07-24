@@ -2,6 +2,7 @@ import unittest
 
 from scanner.nfa import *
 from scanner.tests.tools import build_test_nfa, build_nfa1, draw_nfa
+from metachar import epsilon
 
 
 class TestAddState(unittest.TestCase):
@@ -16,9 +17,9 @@ class TestAddState(unittest.TestCase):
         nfa = NFA()
         nfa.add_state(1)
         nfa.add_state(2)
-        nfa.add_transition(1, 2, nfa.epsilon)
+        nfa.add_transition(1, 2, epsilon)
         nfa.add_state(1)
-        self.assertEqual(nfa.trans_matrix[1][nfa.epsilon], {2})
+        self.assertEqual(nfa.trans_matrix[1][epsilon], {2})
 
 
 class TestMarkingStates(unittest.TestCase):
@@ -46,15 +47,15 @@ class TestAddTransition(unittest.TestCase):
             nfa.add_state(x)
         nfa.add_transition(1, 3, 'x')
         self.assertEqual(nfa.trans_matrix[1]['x'], {3})
-        self.assertEqual(nfa.trans_matrix[1][nfa.epsilon], set())
+        self.assertEqual(nfa.trans_matrix[1][epsilon], set())
         self.assertEqual(nfa.alphabet, {'x'})  # add transition updates alphabet
         nfa.add_transition(1, 2, 'x')
         self.assertEqual(nfa.trans_matrix[1]['x'], {2, 3})
         nfa.add_transition(1, 3, 'x')  # duplicate transition ignored
         self.assertEqual(nfa.trans_matrix[1]['x'], {2, 3})
         self.assertEqual(nfa.alphabet, {'x'})
-        nfa.add_transition(1, 2, nfa.epsilon)  # epsilon transition
-        self.assertEqual(nfa.trans_matrix[1][nfa.epsilon], {2})
+        nfa.add_transition(1, 2, epsilon)  # epsilon transition
+        self.assertEqual(nfa.trans_matrix[1][epsilon], {2})
         self.assertEqual(nfa.alphabet, {'x'})  # epsilon not in alphabet
         nfa.add_transition(2, 2, 'y')  # self-loop
         self.assertEqual(nfa.trans_matrix[2]['y'], {2})
