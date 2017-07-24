@@ -4,8 +4,6 @@ import copy
 
 
 class NFA:
-    epsilon = None
-
     def __init__(self):
         self.trans_matrix = {}
         self.starting_state = None
