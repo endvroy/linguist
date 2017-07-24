@@ -88,7 +88,7 @@ def draw_nfa(nfa, name):
         for char, end_set in v.items():
             for end in end_set:
                 if char == epsilon:
-                    g.edge(str(start), str(end), label='eps')
+                    g.edge(str(start), str(end), label=chr(0x03B5))  # epsilon
                 else:
                     g.edge(str(start), str(end), label=char)
 
