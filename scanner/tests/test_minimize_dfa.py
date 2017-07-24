@@ -1,6 +1,6 @@
 from scanner.minimize_dfa import *
 from scanner.nfa_to_dfa import dict_to_dfa_matrix
-from scanner.dfa import DFA
+from scanner.tests.tools import build_test_dfa, build_test_dfa_2, draw_dfa
 import unittest
 
 
@@ -18,39 +18,6 @@ class TestBuilder(unittest.TestCase):
         self.assertEqual(matrix[1]['i'], 4)
         self.assertEqual(matrix[0]['i'], None)
         self.assertEqual(matrix[3]['x'], None)
-
-
-def build_test_dfa():  # example DFA on page 56
-    dfa = DFA(dict_to_dfa_matrix({0: {'f': 1},
-                                  1: {'e': 2,
-                                      'i': 4},
-                                  2: {'e': 3},
-                                  3: {},
-                                  4: {'e': 5},
-                                  5: {}}),
-              0,
-              {3: 42, 5: 42},
-              {'f', 'e', 'i'})
-    return dfa
-
-
-def build_test_dfa_2():
-    dfa = DFA(dict_to_dfa_matrix({0: {'a': 2,
-                                      'i': 1,
-                                      'f': 2},
-                                  1: {'a': 2,
-                                      'i': 2,
-                                      'f': 3},
-                                  2: {'a': 2,
-                                      'i': 2,
-                                      'f': 2},
-                                  3: {'a': 2,
-                                      'i': 2,
-                                      'f': 2}}),
-              0,
-              {1: 'id', 2: 'id', 3: 'if'},
-              {'a', 'i', 'f'})
-    return dfa
 
 
 class TestMinimize(unittest.TestCase):
@@ -87,6 +54,11 @@ class TestMinimize(unittest.TestCase):
                           frozenset({1}),
                           frozenset({2}),
                           frozenset({3})})
+
+    def test_minimize(self):
+        dfa = build_test_dfa()
+        min_dfa = minimize_dfa(dfa)
+        draw_dfa(min_dfa, 'minimize_dfa')
 
 
 if __name__ == '__main__':

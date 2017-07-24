@@ -1,5 +1,4 @@
-epsilon = None
-eof = -1
+from metachar import epsilon, eof
 
 
 class RuleSet:
@@ -54,6 +53,11 @@ class RuleSet:
                                 new_derives.append(end_derived)
                         self.nt_rules[end_nt] = new_derives
                         break
+
+    def elim_lr(self):
+        self.elim_indir_lr()
+        for ntid in self.nt_rules:
+            self.rewrite_rule(ntid)
 
     def calc_first_sets(self):
         first_sets = {ntid: set() for ntid in self.nt_rules}

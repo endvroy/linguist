@@ -1,7 +1,7 @@
 import unittest
 
-from scanner.nfa import NFA
-from scanner.tests.auto_tests.test_nfa_to_dfa import build_test_nfa
+from scanner.nfa import *
+from scanner.tests.tools import build_test_nfa, build_nfa1, draw_nfa
 
 
 class TestAddState(unittest.TestCase):
@@ -79,6 +79,25 @@ class TestCopy(unittest.TestCase):
         self.assertEqual(nfa.starting_state, 0)
         self.assertFalse(1337 in nfa.accepting_states)
         self.assertFalse('leet' in nfa.alphabet)
+
+
+class TestUtils(unittest.TestCase):
+    def test_cat(self):
+        nfa1 = build_nfa1()
+        nfa2 = build_test_nfa()
+        cat_nfa = cat([nfa1, nfa2])
+        draw_nfa(cat_nfa, 'cat_nfa')
+
+    def test_alt(self):
+        nfa1 = build_nfa1()
+        nfa2 = build_test_nfa()
+        alt_nfa = alt([nfa1, nfa2])
+        draw_nfa(alt_nfa, 'alt_nfa')
+
+    def test_closure(self):
+        nfa = build_nfa1()
+        c_nfa = closure(nfa)
+        draw_nfa(c_nfa, 'closure_nfa')
 
 
 if __name__ == '__main__':

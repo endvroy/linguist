@@ -1,31 +1,9 @@
 import unittest
 
-from scanner.dfa import CategoryInfo
+from scanner.tests.tools import build_test_nfa, draw_dfa
 from scanner.nfa import NFA
+from scanner.dfa import CategoryInfo
 from scanner.nfa_to_dfa import *
-
-
-def build_test_nfa():  # example NFA on page 51
-    nfa = NFA()
-    for i in range(10):
-        nfa.add_state(i)
-    nfa.mark_starting(0)
-    nfa.mark_accepting(9, 1)
-
-    nfa.add_transition(0, 1, 'a')
-    nfa.add_transition(1, 2, nfa.epsilon)
-    nfa.add_transition(2, 9, nfa.epsilon)
-    nfa.add_transition(2, 3, nfa.epsilon)
-    nfa.add_transition(3, 4, nfa.epsilon)
-    nfa.add_transition(3, 6, nfa.epsilon)
-    nfa.add_transition(4, 5, 'b')
-    nfa.add_transition(5, 8, nfa.epsilon)
-    nfa.add_transition(6, 7, 'c')
-    nfa.add_transition(7, 8, nfa.epsilon)
-    nfa.add_transition(8, 3, nfa.epsilon)
-    nfa.add_transition(8, 9, nfa.epsilon)
-
-    return nfa
 
 
 class TestSubsetConstruction(unittest.TestCase):
@@ -121,6 +99,11 @@ class TestSubsetConstruction(unittest.TestCase):
                                             d4: 'id',
                                             d5: 'id',
                                             d6: 'id'})
+
+    def test_nfa_to_dfa(self):
+        nfa = build_test_nfa()
+        dfa = nfa_to_dfa(nfa, {1: CategoryInfo('dummy', 0)})
+        draw_dfa(dfa, 'nfa_to_dfa')
 
 
 if __name__ == '__main__':

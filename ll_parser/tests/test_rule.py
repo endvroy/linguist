@@ -1,4 +1,4 @@
-from gparser.rule import *
+from ll_parser.rule import *
 import unittest
 
 
