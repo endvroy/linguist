@@ -39,13 +39,14 @@ class LALRRuleSet(RuleSet):
                     for rule_id in range(len(self.nt_rules[next_ntid])):
                         key = (next_ntid, rule_id, 0)
                         if key in closure:
-                            closure[key] |= new_la
-                            if new_la != la_set:
-                                work_list[key] = new_la
+                            diff = new_la - closure[key]
+                            if diff:
+                                closure[key] |= diff
+                                work_list[key] = diff
                         else:
-                            closure[key] = new_la
-                            work_list[key] = new_la
+                            closure[key] = new_la.copy()
+                            work_list[key] = new_la.copy()
         return closure
 
-    def item_goto(self, item_set):
+    def item_goto(self, item_set, symbol):
         pass

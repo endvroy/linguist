@@ -33,6 +33,21 @@ class TestRuleSet(unittest.TestCase):
                                    (pair, 0, 0): {eof, '('},
                                    (pair, 1, 0): {eof, '('}})
 
+        item_set = {(pair, 0, 1): {eof, '('},
+                    (pair, 1, 1): {eof, '('}}
+        closure = rule_set.item_closure(item_set)
+        self.assertEqual(closure, {(pair, 0, 1): {eof, '('},
+                                   (pair, 1, 1): {eof, '('},
+                                   (pair, 0, 0): {')'},
+                                   (pair, 1, 0): {')'}})  # CC3
+
+        item_set = {(pair, 0, 1): {')'},
+                    (pair, 1, 1): {')'}}
+        closure = rule_set.item_closure(item_set)
+        self.assertEqual(closure, {(pair, 0, 0): {')'},
+                                   (pair, 0, 1): {')'},
+                                   (pair, 1, 0): {')'},
+                                   (pair, 1, 1): {')'}})  # CC6
 
 if __name__ == '__main__':
     unittest.main()
