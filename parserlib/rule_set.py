@@ -6,6 +6,8 @@ class RuleSet:
         self.nt_rules = {}
         self.goal = None
         self._next_ntid = 0
+        self.first_sets = None
+        self.follow_sets = None
 
     def new_nt(self, num):
         specifiers = list(range(self._next_ntid, self._next_ntid + num))
@@ -44,10 +46,13 @@ class RuleSet:
                         changed = True
                         first_sets[ntid] = new_set
 
+        self.first_sets = first_sets
         return first_sets
 
-    def calc_follow_sets(self, first_sets):
-        first = first_fn(first_sets)
+    def calc_follow_sets(self):
+        if self.first_sets is None:
+            self.calc_first_sets()
+        first = first_fn(self.first_sets)
 
         follow_sets = {ntid: set() for ntid in self.nt_rules}
         follow_sets[self.goal].add(eof)
@@ -72,10 +77,15 @@ class RuleSet:
                         else:
                             trailer = first(x)
 
+        self.follow_sets = follow_sets
         return follow_sets
 
-    def calc_first_set_seq(self, first_sets, d_seq):
-        first = first_fn(first_sets)
+    def calc_first_set_seq(self, d_seq):
+        if self.first_sets is None:
+            self.calc_first_sets()
+
+        first = first_fn(self.first_sets)
+
         f_set = set()
         for symbol in d_seq:
             f_set |= first(symbol)

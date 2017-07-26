@@ -20,7 +20,7 @@ class Item:
 
 
 class LALRRuleSet(RuleSet):
-    def item_closure(self, first_sets, item_map):
+    def item_closure(self, item_map):
         closure = item_map.copy()
         work_list = closure.copy()
         while work_list:
@@ -33,7 +33,7 @@ class LALRRuleSet(RuleSet):
                 if next_symbol[0] == 'nt':
                     new_la = set()
                     for category in la_set:
-                        new_la |= self.calc_first_set_seq(first_sets, derives[pos + 1:] + d(t(category)))
+                        new_la |= self.calc_first_set_seq(derives[pos + 1:] + d(t(category)))
 
                     next_ntid = next_symbol[1]
                     for rule_id in range(len(self.nt_rules[next_ntid])):
@@ -47,5 +47,5 @@ class LALRRuleSet(RuleSet):
                             work_list[key] = new_la
         return closure
 
-    def item_goto(self, first_sets, item_set):
+    def item_goto(self, item_set):
         pass

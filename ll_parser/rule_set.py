@@ -43,12 +43,11 @@ class LLRuleSet(RuleSet):
             self.rewrite_rule(ntid)
 
     def calc_parse_table(self):
-        first_sets = self.calc_first_sets()
-        follow_sets = self.calc_follow_sets(first_sets)
+        follow_sets = self.calc_follow_sets()
         parse_table = {ntid: {} for ntid in self.nt_rules}
         for ntid, derives_list in self.nt_rules.items():
             for derives in derives_list:
-                first_set_seq = self.calc_first_set_seq(first_sets, derives)
+                first_set_seq = self.calc_first_set_seq(derives)
                 if epsilon in first_set_seq:
                     first_plus_set = first_set_seq | follow_sets[ntid]
                 else:

@@ -52,8 +52,7 @@ class TestRuleSet(unittest.TestCase):
         rule_set.add_rule(factor, d(t('('), nt(expr), t(')')))
         rule_set.add_rule(factor, d(t('num')))
         rule_set.add_rule(factor, d(t('name')))
-        first_sets = rule_set.calc_first_sets()
-        follow_sets = rule_set.calc_follow_sets(first_sets)
+        follow_sets = rule_set.calc_follow_sets()
         # answer on EC pp.106
         self.assertEqual(follow_sets, {expr: {')', eof},
                                        expr_prime: {')', eof},
