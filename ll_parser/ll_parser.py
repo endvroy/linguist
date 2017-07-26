@@ -1,4 +1,4 @@
-from ll_parser.rule import eof, t, nt
+from parserlib.rule_set import eof, t, nt
 
 
 class LLParser:
@@ -17,7 +17,7 @@ class LLParser:
                 break  # todo: return the parse tree
             elif focus[0] == 't':
                 if token[0] == focus[1]:  # categories match
-                    stack.pop()
+                    stack.pop()  # todo: collect lexeme
                     token = next(tokens)
                 else:
                     raise RuntimeError(f'parse error: {token[0]} expected')

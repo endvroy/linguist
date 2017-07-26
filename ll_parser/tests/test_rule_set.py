@@ -1,10 +1,11 @@
-from ll_parser.rule import *
 import unittest
 
+from ll_parser.rule_set import *
 
-class TestRuleSet(unittest.TestCase):
+
+class TestLLRuleSet(unittest.TestCase):
     def test_new_nt(self):
-        rule_set = RuleSet()
+        rule_set = LLRuleSet()
         ntid = rule_set.new_nt(1)
         self.assertEqual(ntid, [0])
         ntid = rule_set.new_nt(1)
@@ -15,7 +16,7 @@ class TestRuleSet(unittest.TestCase):
         self.assertEqual(ntid, [5])
 
     def test_rewrite_rule(self):
-        rule_set = RuleSet()
+        rule_set = LLRuleSet()
         expr, term = rule_set.new_nt(2)
         rule_set.add_rule(expr, d(nt(expr), t('+'), nt(term)))
         rule_set.add_rule(expr, d(nt(expr), t('-'), nt(term)))
@@ -30,7 +31,7 @@ class TestRuleSet(unittest.TestCase):
                           term: []})
 
     def test_elim_indir_lr(self):
-        rule_set = RuleSet()  # example grammar on Dragon Book pp.213
+        rule_set = LLRuleSet()  # example grammar on Dragon Book pp.213
         S, A = rule_set.new_nt(2)
         rule_set.add_rule(S, d(nt(A), t('a')))
         rule_set.add_rule(S, d(t('b')))
@@ -43,54 +44,8 @@ class TestRuleSet(unittest.TestCase):
                                                  d(nt(A), t('a'), t('d')),
                                                  d(t('b'), t('d'))]})
 
-    def test_first_sets(self):  # example grammar on EC pp.101
-        rule_set = RuleSet()
-        expr, expr_prime, term, term_prime, factor = rule_set.new_nt(5)
-        rule_set.add_rule(expr, d(nt(term), nt(expr_prime)))
-        rule_set.add_rule(expr_prime, d(t('+'), nt(term), nt(expr_prime)))
-        rule_set.add_rule(expr_prime, d(t('-'), nt(term), nt(expr_prime)))
-        rule_set.add_rule(expr_prime, d(t(epsilon)))
-        rule_set.add_rule(term, d(nt(factor), nt(term_prime)))
-        rule_set.add_rule(term_prime, d(t('*'), nt(factor), nt(term_prime)))
-        rule_set.add_rule(term_prime, d(t('/'), nt(factor), nt(term_prime)))
-        rule_set.add_rule(term_prime, d(t(epsilon)))
-        rule_set.add_rule(factor, d(t('('), nt(expr), t(')')))
-        rule_set.add_rule(factor, d(t('num')))
-        rule_set.add_rule(factor, d(t('name')))
-        first_sets = rule_set.calc_first_sets()
-        # answer on EC pp.105
-        self.assertEqual(first_sets, {expr: {'(', 'name', 'num'},
-                                      expr_prime: {'+', '-', epsilon},
-                                      term: {'(', 'name', 'num'},
-                                      term_prime: {'*', '/', epsilon},
-                                      factor: {'(', 'name', 'num'}})
-
-    def test_follow_sets(self):
-        rule_set = RuleSet()
-        expr, expr_prime, term, term_prime, factor = rule_set.new_nt(5)
-        rule_set.mark_goal(expr)
-        rule_set.add_rule(expr, d(nt(term), nt(expr_prime)))
-        rule_set.add_rule(expr_prime, d(t('+'), nt(term), nt(expr_prime)))
-        rule_set.add_rule(expr_prime, d(t('-'), nt(term), nt(expr_prime)))
-        rule_set.add_rule(expr_prime, d(t(epsilon)))
-        rule_set.add_rule(term, d(nt(factor), nt(term_prime)))
-        rule_set.add_rule(term_prime, d(t('*'), nt(factor), nt(term_prime)))
-        rule_set.add_rule(term_prime, d(t('/'), nt(factor), nt(term_prime)))
-        rule_set.add_rule(term_prime, d(t(epsilon)))
-        rule_set.add_rule(factor, d(t('('), nt(expr), t(')')))
-        rule_set.add_rule(factor, d(t('num')))
-        rule_set.add_rule(factor, d(t('name')))
-        first_sets = rule_set.calc_first_sets()
-        follow_sets = rule_set.calc_follow_sets(first_sets)
-        # answer on EC pp.106
-        self.assertEqual(follow_sets, {expr: {')', eof},
-                                       expr_prime: {')', eof},
-                                       term: {'+', '-', ')', eof},
-                                       term_prime: {'+', '-', ')', eof},
-                                       factor: {'+', '-', '*', '/', ')', eof}})
-
     def test_parse_table(self):
-        rule_set = RuleSet()  # example grammar on DB pp.217
+        rule_set = LLRuleSet()  # example grammar on DB pp.217
         E, Ep, T, Tp, F = rule_set.new_nt(5)
         rule_set.add_rule(E, d(nt(T), nt(Ep)))
         rule_set.add_rule(Ep, d(t('+'), nt(T), nt(Ep)))
@@ -121,7 +76,7 @@ class TestRuleSet(unittest.TestCase):
                           })
 
     def test_conflict_parse_table(self):
-        rule_set = RuleSet()  # example grammar on DB pp.225
+        rule_set = LLRuleSet()  # example grammar on DB pp.225
         S, Sp, E = rule_set.new_nt(3)
         rule_set.add_rule(S, d(t('i'), nt(E), t('t'), nt(S), nt(Sp)))
         rule_set.add_rule(S, d(t('a')))
