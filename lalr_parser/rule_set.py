@@ -48,5 +48,23 @@ class LALRRuleSet(RuleSet):
                             work_list[key] = new_la.copy()
         return closure
 
-    def item_goto(self, item_set, symbol):
-        pass
+    def item_partition_goto(self, item_set):
+        partition = {}
+        for item, la_set in item_set.items():
+            ntid, rule_id, pos = item
+
+            derives = self.nt_rules[ntid][rule_id]  # fetch the original rule
+            if pos < len(derives):
+                next_symbol = derives[pos]
+                if next_symbol in partition:
+                    partition[next_symbol][item] = la_set.copy()
+                else:
+                    partition[next_symbol] = {item: la_set.copy()}
+        return partition
+
+    def item_advance(self, item_set):
+        new_set = {}
+        for item, la_set in item_set.items():
+            ntid, rule_id, pos = item
+            new_set[(ntid, rule_id, pos + 1)] = la_set.copy()
+        return new_set

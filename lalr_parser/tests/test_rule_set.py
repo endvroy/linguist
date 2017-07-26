@@ -49,5 +49,44 @@ class TestRuleSet(unittest.TestCase):
                                    (pair, 1, 0): {')'},
                                    (pair, 1, 1): {')'}})  # CC6
 
+    def test_ietm_partition_goto(self):
+        rule_set = LALRRuleSet()  # example grammar on EC pp.120
+        goal, list_, pair = rule_set.new_nt(3)
+        rule_set.add_rule(goal, d(nt(list_)))
+        rule_set.add_rule(list_, d(nt(list_), nt(pair)))
+        rule_set.add_rule(list_, d(nt(pair)))
+        rule_set.add_rule(pair, d(t('('), nt(pair), t(')')))
+        rule_set.add_rule(pair, d(t('('), t(')')))
+        rule_set.mark_goal(goal)
+
+        cc3 = {(pair, 0, 1): {eof, '('},
+               (pair, 1, 1): {eof, '('},
+               (pair, 0, 0): {')'},
+               (pair, 1, 0): {')'}}
+
+        partitions = rule_set.item_partition_goto(cc3)
+        self.assertEqual(partitions,
+                         {('nt', pair): {(pair, 0, 1): {eof, '('}},
+                          ('t', '('): {(pair, 0, 0): {')'},
+                                       (pair, 1, 0): {')'}},
+                          ('t', ')'): {(pair, 1, 1): {eof, '('}}})
+
+    def test_item_advance(self):
+        rule_set = LALRRuleSet()  # example grammar on EC pp.120
+        goal, list_, pair = rule_set.new_nt(3)
+        rule_set.add_rule(goal, d(nt(list_)))
+        rule_set.add_rule(list_, d(nt(list_), nt(pair)))
+        rule_set.add_rule(list_, d(nt(pair)))
+        rule_set.add_rule(pair, d(t('('), nt(pair), t(')')))
+        rule_set.add_rule(pair, d(t('('), t(')')))
+        rule_set.mark_goal(goal)
+
+        item_set = {(pair, 0, 0): {')'},
+                    (pair, 1, 0): {')'}}
+        result = rule_set.item_advance(item_set)
+        self.assertEqual(result, {(pair, 0, 1): {')'},
+                                  (pair, 1, 1): {')'}})
+
+
 if __name__ == '__main__':
     unittest.main()
