@@ -63,17 +63,15 @@ class LALRRuleSet(RuleSet):
     def calc_parse_table(self):
         initial = {(self.goal, i, 0): {eof} for i in range(len(self.nt_rules[self.goal]))}
         initial = self.item_closure(initial)
+
         cc = [initial]
         cc_map = {frozenset(initial.keys()): 0}
-
-        action = []
-        goto = []
-
+        goto = [{}]
         # build cc and goto table
-        i = 0
-        while i < len(cc):
+        work_list = {0}
+        while work_list:
+            i = work_list.pop()
             item_set = cc[i]
-            goto.append({})
 
             partition = self.item_partition_goto(item_set)
             for sym, item_set_x in partition.items():
@@ -83,29 +81,55 @@ class LALRRuleSet(RuleSet):
                 # update canonical collection
                 if cc_key in cc_map:
                     for k, v in new_item_set.items():
-                        cc[cc_map[cc_key]][k] |= v  # merge lookahead
+                        diff = v - cc[cc_map[cc_key]][k]
+                        if diff:
+                            cc[cc_map[cc_key]][k] |= diff  # merge lookahead
+                            work_list.add(cc_map[cc_key])
                 else:  # found new state
                     cc_map[cc_key] = len(cc)
+                    work_list.add(len(cc))
                     cc.append(new_item_set)
+                    goto.append({})
 
                 goto_id = cc_map[cc_key]
                 goto[i][sym] = goto_id  # update goto table
-            i += 1
 
+        action = []
         for i, item_set in enumerate(cc):  # build action table
             action.append({})
             for item, la_set in item_set.items():
                 ntid, rule_id, pos = item
                 derives = self.nt_rules[ntid][rule_id]  # fetch the original rule
-                for category in la_set:
-                    if pos == len(derives):
-                        if category == eof and ntid == self.goal:
-                            action[i][eof] = Action.accept,  # accept
+                if pos == len(derives):  # accept or reduce
+                    for category in la_set:
+                        if category == eof and ntid == self.goal:  # accept
+                            if eof in action[i]:
+                                if action[i][eof][0] == Action.shift:
+                                    raise RuntimeError(
+                                        f'grammar not in LALR(1); shift-accept conflict spotted in state {item_set}')
+                                elif action[i][eof][0] == Action.reduce:
+                                    raise RuntimeError(
+                                        f'grammar not in LALR(1); reduce-accept conflict spotted in state {item_set}')
+                            else:
+                                action[i][eof] = Action.accept,  # accept
+                        else:  # reduce
+                            entry = Action.reduce, ntid, rule_id
+                            if category in action[i] and action[i][category] != entry:  # conflict
+                                if action[i][category][0] == Action.shift:
+                                    raise RuntimeError(
+                                        f'grammar not in LALR(1); shift-reduce conflict spotted in state {item_set}')
+                                else:
+                                    raise RuntimeError(
+                                        f'grammar not in LALR(1); reduce-reduce conflict spotted in state {item_set}')
+                            else:
+                                action[i][category] = entry  # reduce
+                else:  # shift or error
+                    next_sym = derives[pos]
+                    if next_sym[0] == 't':  # shift
+                        if next_sym[1] in action[i] and action[i][next_sym[1]][0] != Action.shift:
+                            raise RuntimeError(
+                                f'grammar not in LALR(1); shift-reduce conflict spotted in state {item_set}')
                         else:
-                            action[i][category] = Action.reduce, ntid, rule_id  # reduce
-                    else:
-                        next_sym = derives[pos]
-                        if next_sym[0] == 't':
                             action[i][next_sym[1]] = Action.shift,  # shift
 
         return action, goto  # action table, goto table

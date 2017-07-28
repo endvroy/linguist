@@ -121,8 +121,8 @@ class TestRuleSet(unittest.TestCase):
                           {'(': (Action.shift,), ')': (Action.shift,)},
                           {'(': (Action.reduce, 1, 0), eof: (Action.reduce, 1, 0)},
                           {')': (Action.shift,)},
-                          {'(': (Action.reduce, 2, 1), eof: (Action.reduce, 2, 1)},
-                          {'(': (Action.reduce, 2, 0), eof: (Action.reduce, 2, 0)}]
+                          {'(': (Action.reduce, 2, 1), eof: (Action.reduce, 2, 1), ')': (Action.reduce, 2, 1)},
+                          {'(': (Action.reduce, 2, 0), eof: (Action.reduce, 2, 0), ')': (Action.reduce, 2, 0)}]
 
         correct_goto = [{('nt', 1): 1, ('nt', 2): 2, ('t', '('): 3},
                         {('nt', 2): 4, ('t', '('): 3},
@@ -136,7 +136,7 @@ class TestRuleSet(unittest.TestCase):
         self.assertIsomorphism(action, goto, correct_action, correct_goto)
 
     def test_calc_parse_table_2(self):
-        rule_set = LALRRuleSet()  # example grammar on stanford handout pp.0
+        rule_set = LALRRuleSet()  # example grammar on stanford handout pp.1
         S, X = rule_set.new_nt(2)
         rule_set.add_rule(S, d(nt(X), nt(X)))
         rule_set.add_rule(X, d(t('a'), nt(X)))
@@ -159,6 +159,43 @@ class TestRuleSet(unittest.TestCase):
                         {}]
 
         self.assertIsomorphism(action, goto, correct_action, correct_goto)
+
+    def test_calc_LALR_conflict_table(self):
+        rule_set = LALRRuleSet()  # example grammar on stanford handout pp.3
+        S, B, C = rule_set.new_nt(3)
+        rule_set.add_rule(S, d(t('a'), nt(B), t('c')))
+        rule_set.add_rule(S, d(t('b'), nt(C), t('c')))
+        rule_set.add_rule(S, d(t('a'), nt(C), t('d')))
+        rule_set.add_rule(S, d(t('b'), nt(B), t('d')))
+        rule_set.add_rule(B, d(t('e')))
+        rule_set.add_rule(C, d(t('e')))
+        rule_set.mark_goal(S)
+
+        with self.assertRaises(RuntimeError):
+            action, goto = rule_set.calc_parse_table()
+
+    def test_calc_ambiguous_table(self):
+        rule_set = LALRRuleSet()  # example grammar on EC pp.136
+        goal, stmt = rule_set.new_nt(2)
+        rule_set.add_rule(goal, d(nt(stmt)))
+        rule_set.add_rule(stmt, d(t('if'), nt(stmt)))
+        rule_set.add_rule(stmt, d(t('if'), nt(stmt), t('else'), nt(stmt)))
+        rule_set.add_rule(stmt, d(t('assign')))
+        rule_set.mark_goal(goal)
+
+        with self.assertRaises(RuntimeError):
+            action, goto = rule_set.calc_parse_table()
+
+    def test_calc_ambiguous_table_2(self):
+        rule_set = LALRRuleSet()  # example grammar on EC pp.136
+        stmt = rule_set.new_nt(1)[0]
+        rule_set.add_rule(stmt, d(t('if'), nt(stmt)))
+        rule_set.add_rule(stmt, d(t('if'), nt(stmt), t('else'), nt(stmt)))
+        rule_set.add_rule(stmt, d(t('assign')))
+        rule_set.mark_goal(stmt)
+
+        with self.assertRaises(RuntimeError):
+            action, goto = rule_set.calc_parse_table()
 
 
 if __name__ == '__main__':
