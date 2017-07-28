@@ -1,30 +1,11 @@
-class Epsilon:
-    def __repr__(self):
-        return '<epsilon>'
-
-    def __eq__(self, other):
-        if isinstance(other, Epsilon):
-            return True
-        else:
-            return False
-
-    def __hash__(self):
-        return 0
+from enum import Enum, unique
 
 
-class EOF:
-    def __repr__(self):
-        return '<eof>'
-
-    def __eq__(self, other):
-        if isinstance(other, EOF):
-            return True
-        else:
-            return False
-
-    def __hash__(self):
-        return 1
+@unique
+class MetaChar(Enum):
+    epsilon = 0
+    eof = 1
 
 
-epsilon = Epsilon()
-eof = EOF()
+epsilon = MetaChar.epsilon
+eof = MetaChar.eof
