@@ -7,8 +7,7 @@ class LLParser:
         self.rule_set.elim_lr()
         self.parse_table = self.rule_set.calc_parse_table()
 
-    def parse(self, token_stream):
-        tokens = gen_tokens(token_stream)
+    def parse(self, tokens):
         token = next(tokens)
         stack = [t(eof), nt(self.rule_set.goal)]
         while True:
@@ -29,9 +28,3 @@ class LLParser:
                 stack.pop()
                 for x in reversed(derives):
                     stack.append(x)
-
-
-def gen_tokens(token_stream):
-    for token in token_stream:
-        yield token
-    yield (eof, '')

@@ -1,4 +1,5 @@
 import warnings
+from metachar import eof
 
 
 class Scanner:
@@ -38,3 +39,4 @@ class Scanner:
 
         while index < limit:
             yield next_token()
+        yield (eof, '')

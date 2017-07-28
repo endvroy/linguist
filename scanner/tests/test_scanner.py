@@ -19,9 +19,9 @@ class TestScanner(unittest.TestCase):
         min_dfa = minimize_dfa(dfa)
         scanner = Scanner(min_dfa, category_info)
         tokens = scanner.tokens('if')
-        self.assertEqual(list(tokens), [(1, 'if')])
+        self.assertEqual(list(tokens), [(1, 'if'), (eof, '')])
         tokens = scanner.tokens('ia')
-        self.assertEqual(list(tokens), [(2, 'ia')])
+        self.assertEqual(list(tokens), [(2, 'ia'), (eof, '')])
 
     # @unittest.skip
     def test_scan(self):
@@ -51,7 +51,8 @@ class TestScanner(unittest.TestCase):
                           (3, ' '),
                           (4, '='),
                           (3, ' '),
-                          (0, 'r31')])
+                          (0, 'r31'),
+                          (eof, '')])
 
 
 if __name__ == '__main__':
