@@ -73,9 +73,9 @@ class LALRRuleSet(RuleSet):
             i = work_list.pop()
             item_set = cc[i]
 
-            partition = self.item_partition_goto(item_set)
+            partition = self.item_partition_goto(item_set)  # prepare goto
             for sym, item_set_x in partition.items():
-                new_item_set = self.item_closure(self.item_advance(item_set_x))
+                new_item_set = self.item_closure(self.item_advance(item_set_x))  # calc goto
                 cc_key = frozenset(new_item_set.keys())
 
                 # update canonical collection
@@ -94,8 +94,8 @@ class LALRRuleSet(RuleSet):
                 goto_id = cc_map[cc_key]
                 goto[i][sym] = goto_id  # update goto table
 
-        action = []
-        for i, item_set in enumerate(cc):  # build action table
+        action = []  # build action table
+        for i, item_set in enumerate(cc):
             action.append({})
             for item, la_set in item_set.items():
                 ntid, rule_id, pos = item
@@ -103,33 +103,27 @@ class LALRRuleSet(RuleSet):
                 if pos == len(derives):  # accept or reduce
                     for category in la_set:
                         if category == eof and ntid == self.goal:  # accept
-                            if eof in action[i]:
-                                if action[i][eof][0] == Action.shift:
-                                    raise RuntimeError(
-                                        f'grammar not in LALR(1); shift-accept conflict spotted in state {item_set}')
-                                elif action[i][eof][0] == Action.reduce:
-                                    raise RuntimeError(
-                                        f'grammar not in LALR(1); reduce-accept conflict spotted in state {item_set}')
+                            entry = Action.accept,
+                            if eof in action[i] and action[i][eof] != entry:
+                                raise RuntimeError(
+                                    f'grammar not in LALR(1); conflict actions spotted in state {item_set}')
                             else:
-                                action[i][eof] = Action.accept,  # accept
+                                action[i][eof] = entry  # accept
                         else:  # reduce
                             entry = Action.reduce, ntid, rule_id
                             if category in action[i] and action[i][category] != entry:  # conflict
-                                if action[i][category][0] == Action.shift:
-                                    raise RuntimeError(
-                                        f'grammar not in LALR(1); shift-reduce conflict spotted in state {item_set}')
-                                else:
-                                    raise RuntimeError(
-                                        f'grammar not in LALR(1); reduce-reduce conflict spotted in state {item_set}')
+                                raise RuntimeError(
+                                    f'grammar not in LALR(1); conflict actions spotted in state {item_set}')
                             else:
                                 action[i][category] = entry  # reduce
                 else:  # shift or error
                     next_sym = derives[pos]
                     if next_sym[0] == 't':  # shift
-                        if next_sym[1] in action[i] and action[i][next_sym[1]][0] != Action.shift:
+                        entry = Action.shift,
+                        if next_sym[1] in action[i] and action[i][next_sym[1]] != entry:
                             raise RuntimeError(
-                                f'grammar not in LALR(1); shift-reduce conflict spotted in state {item_set}')
+                                f'grammar not in LALR(1); conflict actions spotted in state {item_set}')
                         else:
-                            action[i][next_sym[1]] = Action.shift,  # shift
+                            action[i][next_sym[1]] = entry  # shift
 
         return action, goto  # action table, goto table
