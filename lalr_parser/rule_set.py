@@ -103,7 +103,7 @@ class LALRRuleSet(RuleSet):
                 if pos == len(derives):  # accept or reduce
                     for category in la_set:
                         if category == eof and ntid == self.goal:  # accept
-                            entry = Action.accept,
+                            entry = Action.accept, ntid, rule_id
                             if eof in action[i] and action[i][eof] != entry:
                                 raise RuntimeError(
                                     f'grammar not in LALR(1); conflict actions spotted in state {item_set}')

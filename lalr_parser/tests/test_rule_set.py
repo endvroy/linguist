@@ -116,7 +116,7 @@ class TestRuleSet(unittest.TestCase):
 
         action, goto = rule_set.calc_parse_table()
         correct_action = [{'(': (Action.shift,)},
-                          {'(': (Action.shift,), eof: (Action.accept,)},
+                          {'(': (Action.shift,), eof: (Action.accept, 0, 0)},
                           {'(': (Action.reduce, 1, 1), eof: (Action.reduce, 1, 1)},
                           {'(': (Action.shift,), ')': (Action.shift,)},
                           {'(': (Action.reduce, 1, 0), eof: (Action.reduce, 1, 0)},
@@ -148,7 +148,7 @@ class TestRuleSet(unittest.TestCase):
                           {'a': (Action.shift,), 'b': (Action.shift,)},
                           {'a': (Action.shift,), 'b': (Action.shift,)},
                           {'a': (Action.reduce, 1, 1), 'b': (Action.reduce, 1, 1), eof: (Action.reduce, 1, 1)},
-                          {eof: (Action.accept,)},
+                          {eof: (Action.accept, 0, 0)},
                           {'a': (Action.reduce, 1, 0), 'b': (Action.reduce, 1, 0), eof: (Action.reduce, 1, 0)}]
 
         correct_goto = [{('nt', X): 1, ('t', 'a'): 2, ('t', 'b'): 3},
