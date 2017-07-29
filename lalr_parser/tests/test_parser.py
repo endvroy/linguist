@@ -64,6 +64,52 @@ class TestParser(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             parser.parse([('num', 3), ('plus', '+'), ('plus', '+'), (eof, '')])
 
+    def test_parse_2(self):
+        rule_set = LALRRuleSet()
+        expr, term, factor = rule_set.new_nt(3)
+        rule_set.add_rule(expr, d(nt(expr), t('plus/minus'), nt(term)))
+        rule_set.add_rule(expr, d(nt(term)))
+        rule_set.add_rule(term, d(nt(term), t('times/divide'), nt(factor)))
+        rule_set.add_rule(term, d(nt(factor)))
+        rule_set.add_rule(factor, d(t('num')))
+        rule_set.mark_goal(expr)
+
+        def action00(data_list):
+            if data_list[1] == '+':
+                return data_list[0] + data_list[2]
+            else:
+                return data_list[0] - data_list[2]
+
+        def action01(data_list):
+            return data_list[0]
+
+        def action10(data_list):
+            if data_list[1] == '*':
+                return data_list[0] * data_list[2]
+            else:
+                return data_list[0] / data_list[2]
+
+        def action11(data_list):
+            return data_list[0]
+
+        def action20(data_list):
+            return data_list[0]
+
+        rule_actions = {(0, 0): action00,
+                        (0, 1): action01,
+                        (1, 0): action10,
+                        (1, 1): action11,
+                        (2, 0): action20}
+
+        parser = LALRParser(rule_set, rule_actions)
+        result = parser.parse([('num', 3),
+                               ('plus/minus', '+'),
+                               ('num', 4),
+                               ('times/divide', '*'),
+                               ('num', 5),
+                               (eof, '')])
+        self.assertEqual(result, 23)
+
 
 if __name__ == '__main__':
     unittest.main()
