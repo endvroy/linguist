@@ -38,5 +38,11 @@ class Scanner:
                 raise RuntimeError(f"unknown token near position {end}")
 
         while index < limit:
-            yield next_token()
+            token = next_token()
+            action = self.category_info[token[0]].action
+            if action == 'skip':
+                continue
+            elif action is not None:
+                token = token[0], action(token[1])
+            yield token
         yield (eof, '')

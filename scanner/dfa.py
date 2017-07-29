@@ -11,9 +11,10 @@ class DFA:
 
 
 class CategoryInfo:
-    def __init__(self, name, priority):
+    def __init__(self, name, priority, action=None):
         self.name = name
         self.priority = priority
+        self.action = action
 
     def __repr__(self):
-        return f'CategoryInfo({self.name}, {self.priority})'
+        return f'CategoryInfo({self.name}, {self.priority}, {self.action})'
