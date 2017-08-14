@@ -17,25 +17,25 @@ class TestParser(unittest.TestCase):
         rule_set.add_rule(factor, d(t('num')))
         rule_set.mark_goal(expr)
 
-        def action00(data_list):
+        def action00(data_list, repo):
             return data_list[0] + data_list[2]
 
-        def action01(data_list):
+        def action01(data_list, repo):
             return data_list[0] - data_list[2]
 
-        def action02(data_list):
+        def action02(data_list, repo):
             return data_list[0]
 
-        def action10(data_list):
+        def action10(data_list, repo):
             return data_list[0] * data_list[2]
 
-        def action11(data_list):
+        def action11(data_list, repo):
             return data_list[0] / data_list[2]
 
-        def action12(data_list):
+        def action12(data_list, repo):
             return data_list[0]
 
-        def action20(data_list):
+        def action20(data_list, repo):
             return data_list[0]
 
         rule_actions = {(0, 0): action00,
@@ -74,25 +74,25 @@ class TestParser(unittest.TestCase):
         rule_set.add_rule(factor, d(t('num')))
         rule_set.mark_goal(expr)
 
-        def action00(data_list):
+        def action00(data_list, repo):
             if data_list[1] == '+':
                 return data_list[0] + data_list[2]
             else:
                 return data_list[0] - data_list[2]
 
-        def action01(data_list):
+        def action01(data_list, repo):
             return data_list[0]
 
-        def action10(data_list):
+        def action10(data_list, repo):
             if data_list[1] == '*':
                 return data_list[0] * data_list[2]
             else:
                 return data_list[0] / data_list[2]
 
-        def action11(data_list):
+        def action11(data_list, repo):
             return data_list[0]
 
-        def action20(data_list):
+        def action20(data_list, repo):
             return data_list[0]
 
         rule_actions = {(0, 0): action00,

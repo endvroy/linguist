@@ -7,7 +7,7 @@ class LALRParser:
         self.action, self.goto = self.rule_set.calc_parse_table()
         self.rule_actions = rule_actions
 
-    def parse(self, tokens):
+    def parse(self, tokens, repo=None):
         tokens = iter(tokens)
         data_stack = [None]
         state_stack = [0]
@@ -24,7 +24,7 @@ class LALRParser:
                     split_point = -len(derives)
                     data_list = data_stack[split_point:]
                     if self.rule_actions[(ntid, rule_id)] is not None:
-                        data = self.rule_actions[(ntid, rule_id)](data_list)
+                        data = self.rule_actions[(ntid, rule_id)](data_list, repo)
                     else:
                         data = None
                     return data
@@ -43,7 +43,7 @@ class LALRParser:
                     state_stack = state_stack[:split_point]
                     # perform actions
                     if self.rule_actions[(ntid, rule_id)] is not None:
-                        data = self.rule_actions[(ntid, rule_id)](data_list)
+                        data = self.rule_actions[(ntid, rule_id)](data_list, repo)
                     else:
                         data = None
                     data_stack.append(data)
