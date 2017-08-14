@@ -1,5 +1,5 @@
 from parserlib.rule_set import RuleSet, d, t, nt
-from metachar import eof
+from metachar import eof, epsilon
 from enum import Enum, unique
 
 
@@ -27,8 +27,11 @@ class LALRRuleSet(RuleSet):
                         new_la |= self.calc_first_set_seq(derives[pos + 1:] + d(t(category)))
 
                     next_ntid = next_symbol[1]
-                    for rule_id in range(len(self.nt_rules[next_ntid])):
-                        key = (next_ntid, rule_id, 0)
+                    for rule_id, rule in enumerate(self.nt_rules[next_ntid]):
+                        loc = 0
+                        while loc < len(rule) and rule[loc] == t(epsilon):  # skip over epsilons
+                            loc += 1
+                        key = (next_ntid, rule_id, loc)
                         if key in closure:
                             diff = new_la - closure[key]
                             if diff:
@@ -60,9 +63,19 @@ class LALRRuleSet(RuleSet):
             new_set[(ntid, rule_id, pos + 1)] = la_set.copy()
         return new_set
 
-    def calc_parse_table(self):
-        initial = {(self.goal, i, 0): {eof} for i in range(len(self.nt_rules[self.goal]))}
+    def calc_initial(self):
+        initial = {}
+        for rule_id, rule in enumerate(self.nt_rules[self.goal]):
+            loc = 0
+            while loc < len(rule) and rule[loc] == t(epsilon):  # skip over epsilons
+                loc += 1
+            initial[(self.goal, rule_id, loc)] = {eof}
+        # initial = {(self.goal, i, 0): {eof} for i in range(len(self.nt_rules[self.goal]))}
         initial = self.item_closure(initial)
+        return initial
+
+    def calc_parse_table(self):
+        initial = self.calc_initial()
 
         cc = [initial]
         cc_map = {frozenset(initial.keys()): 0}

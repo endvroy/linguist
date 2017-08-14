@@ -50,7 +50,7 @@ class TestRuleSet(unittest.TestCase):
                                    (pair, 1, 0): {')'},
                                    (pair, 1, 1): {')'}})  # CC6
 
-    def test_ietm_partition_goto(self):
+    def test_item_partition_goto(self):
         rule_set = LALRRuleSet()  # example grammar on EC pp.120
         goal, list_, pair = rule_set.new_nt(3)
         rule_set.add_rule(goal, d(nt(list_)))
@@ -88,7 +88,18 @@ class TestRuleSet(unittest.TestCase):
         self.assertEqual(result, {(pair, 0, 1): {')'},
                                   (pair, 1, 1): {')'}})
 
-    def assertIsomorphism(self, action, goto, correct_action, correct_goto):
+    def test_item_closure_with_eps(self):
+        rule_set = LALRRuleSet()
+        S, M = rule_set.new_nt(2)
+        rule_set.add_rule(S, d(t('if'), t('B'), nt(M), nt(S)))
+        rule_set.add_rule(S, d(t('A')))
+        rule_set.add_rule(M, d(t(epsilon)))
+        item_set = {(S, 0, 2): {eof}}
+        result = rule_set.item_closure(item_set)
+        self.assertEqual(result, {(S, 0, 2): {eof},
+                                  (M, 0, 1): {'if', 'A'}})
+
+    def assertIsomorphic(self, action, goto, correct_action, correct_goto):
         if len(action) != len(correct_action) or len(goto) != len(correct_goto):
             self.fail(f'number of states unequal: correct = {len(correct_action)}, got = {len(action)}')
 
@@ -133,7 +144,19 @@ class TestRuleSet(unittest.TestCase):
                         {},
                         {}]
 
-        self.assertIsomorphism(action, goto, correct_action, correct_goto)
+        self.assertIsomorphic(action, goto, correct_action, correct_goto)
+
+    def test_calc_initial(self):
+        rule_set = LALRRuleSet()  # example grammar on stanford handout pp.1
+        S, X = rule_set.new_nt(2)
+        rule_set.add_rule(S, d(nt(X), nt(X)))
+        rule_set.add_rule(X, d(t('a'), nt(X)))
+        rule_set.add_rule(X, d(t('b')))
+        rule_set.mark_goal(S)
+        initial = rule_set.calc_initial()
+        self.assertEqual(initial, {(S, 0, 0): {eof},
+                                   (X, 0, 0): {'a', 'b'},
+                                   (X, 1, 0): {'a', 'b'}})
 
     def test_calc_parse_table_2(self):
         rule_set = LALRRuleSet()  # example grammar on stanford handout pp.1
@@ -158,7 +181,7 @@ class TestRuleSet(unittest.TestCase):
                         {},
                         {}]
 
-        self.assertIsomorphism(action, goto, correct_action, correct_goto)
+        self.assertIsomorphic(action, goto, correct_action, correct_goto)
 
     def test_calc_LALR_conflict_table(self):
         rule_set = LALRRuleSet()  # example grammar on stanford handout pp.3
