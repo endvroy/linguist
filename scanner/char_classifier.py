@@ -2,12 +2,22 @@ from bisect import bisect_right
 from functools import reduce
 
 
+def make_markers(m):
+    return sorted(list(set(m)))
+
+
 class CharClassifier:
     def __init__(self, markers):
-        self.markers = sorted(markers)
+        self.markers = make_markers(markers)
 
     def classify(self, char):
         return bisect_right(self.markers, ord(char))
+
+    def all_classes(self):
+        return range(len(self.markers) + 1)
+
+    def copy(self):
+        return CharClassifier(self.markers)
 
 
 def merge_markers(a, b):
@@ -43,6 +53,7 @@ def map_char_class(original_markers, new_markers):
 
 
 def merge_classifiers(classifiers):
+    classifiers = list(classifiers)
     new_markers = reduce(merge_markers, (x.markers for x in classifiers))
     new_classifier = CharClassifier(new_markers)
     class_maps = [map_char_class(x.markers, new_markers) for x in classifiers]

@@ -9,6 +9,17 @@ class TestClassifier(unittest.TestCase):
         self.assertEqual(1, classifier.classify('y'))
         self.assertEqual(2, classifier.classify('z'))
 
+    def test_all_classes(self):
+        classifier = CharClassifier([ord('y'), ord('y') + 1])
+        self.assertEqual([0, 1, 2], list(classifier.all_classes()))
+
+    def test_copy(self):
+        classifier = CharClassifier([ord('y'), ord('y') + 1])
+        copied = classifier.copy()
+        copied.markers.append('x')
+        self.assertEqual([ord('y'), ord('y') + 1, 'x'], copied.markers)
+        self.assertEqual([ord('y'), ord('y') + 1], classifier.markers)
+
 
 class TestMerge(unittest.TestCase):
     def test_merge_markers(self):

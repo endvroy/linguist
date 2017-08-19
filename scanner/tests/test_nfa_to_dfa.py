@@ -10,22 +10,22 @@ class TestSubsetConstruction(unittest.TestCase):
     def test_eps_closure(self):
         nfa = build_test_nfa()
         self.assertEqual(epsilon_closure(nfa, {0}), {0})
-        self.assertEqual(epsilon_closure(nfa, nfa.trans_matrix[0]['a']), {1, 2, 3, 4, 6, 9})
-        self.assertEqual(epsilon_closure(nfa, nfa.trans_matrix[0]['b']), set())
-        self.assertEqual(epsilon_closure(nfa, nfa.trans_matrix[0]['c']), set())
+        self.assertEqual({1, 2, 3, 4, 6, 9}, epsilon_closure(nfa, nfa.trans_matrix[0][nfa.classifier.classify('a')]))
+        self.assertEqual(set(), epsilon_closure(nfa, nfa.trans_matrix[0][nfa.classifier.classify('b')]))
+        self.assertEqual(set(), epsilon_closure(nfa, nfa.trans_matrix[0]['c']))
 
     def test_next_set(self):
         nfa = build_test_nfa()
-        self.assertEqual(next_set(nfa, {1, 2, 3, 4, 6, 9}, 'a'), set())
-        self.assertEqual(next_set(nfa, {1, 2, 3, 4, 6, 9}, 'b'), {5})
-        self.assertEqual(next_set(nfa, {1, 2, 3, 4, 6, 9}, 'c'), {7})
+        self.assertEqual(set(), next_set(nfa, {1, 2, 3, 4, 6, 9}, nfa.classifier.classify('a')))
+        self.assertEqual({5}, next_set(nfa, {1, 2, 3, 4, 6, 9}, nfa.classifier.classify('b')))
+        self.assertEqual({7}, next_set(nfa, {1, 2, 3, 4, 6, 9}, nfa.classifier.classify('c')))
 
     def test_next_closure(self):
         nfa = build_test_nfa()
-        self.assertEqual(epsilon_closure(nfa, next_set(nfa, {1, 2, 3, 4, 6, 9}, 'a')), set())
-        self.assertEqual(epsilon_closure(nfa, next_set(nfa, {1, 2, 3, 4, 6, 9}, 'b')),
+        self.assertEqual(epsilon_closure(nfa, next_set(nfa, {1, 2, 3, 4, 6, 9}, nfa.classifier.classify('a'))), set())
+        self.assertEqual(epsilon_closure(nfa, next_set(nfa, {1, 2, 3, 4, 6, 9}, nfa.classifier.classify('b'))),
                          {5, 8, 9, 3, 4, 6})
-        self.assertEqual(epsilon_closure(nfa, next_set(nfa, {1, 2, 3, 4, 6, 9}, 'c')),
+        self.assertEqual(epsilon_closure(nfa, next_set(nfa, {1, 2, 3, 4, 6, 9}, nfa.classifier.classify('c'))),
                          {7, 8, 9, 3, 4, 6})
 
     def test_subset_cons(self):
@@ -36,13 +36,13 @@ class TestSubsetConstruction(unittest.TestCase):
         d2 = frozenset({5, 8, 9, 3, 4, 6})
         d3 = frozenset({7, 8, 9, 3, 4, 6})
         self.assertEqual(trans_matrix,
-                         {d0: {'a': d1},
-                          d1: {'b': d2,
-                               'c': d3},
-                          d2: {'b': d2,
-                               'c': d3},
-                          d3: {'b': d2,
-                               'c': d3}})
+                         {d0: {1: d1},
+                          d1: {2: d2,
+                               3: d3},
+                          d2: {2: d2,
+                               3: d3},
+                          d3: {2: d2,
+                               3: d3}})
         self.assertEqual(starting_state, d0)
         self.assertEqual(accepting_states, {d1: 1,
                                             d2: 1,

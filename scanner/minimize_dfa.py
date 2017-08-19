@@ -93,4 +93,5 @@ def minimize_dfa(dfa):
     return DFA(new_matrix,
                starting_state,
                accepting_states,
-               dfa.alphabet)
+               dfa.alphabet,
+               dfa.classifier)

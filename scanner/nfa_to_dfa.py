@@ -102,4 +102,5 @@ def nfa_to_dfa(nfa, category_info):
     return DFA(dfa_matrix,
                starting_state,
                accepting_states,
-               nfa.alphabet)
+               nfa.alphabet,
+               nfa.classifier)

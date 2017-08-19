@@ -20,7 +20,8 @@ class Scanner:
             states = [state]
             while end < limit and state is not None:  # eat
                 char = text[end]
-                state = self.dfa.trans_matrix[state][char]
+                char_class = self.dfa.classifier.classify(char)
+                state = self.dfa.trans_matrix[state][char_class]
                 states.append(state)
                 end += 1
 

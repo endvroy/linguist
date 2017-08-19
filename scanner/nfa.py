@@ -1,6 +1,7 @@
 from collections import defaultdict
 from metachar import epsilon
 import copy
+from scanner.char_classifier import CharClassifier, merge_classifiers, make_markers
 
 
 class NFA:
@@ -9,6 +10,7 @@ class NFA:
         self.starting_state = None
         self.accepting_states = {}
         self.alphabet = set()
+        self.classifier = None
 
     def copy(self):
         nfa = NFA()
@@ -16,6 +18,10 @@ class NFA:
         nfa.starting_state = self.starting_state
         nfa.accepting_states = self.accepting_states.copy()
         nfa.alphabet = self.alphabet.copy()
+        if self.classifier is not None:
+            nfa.classifier = self.classifier.copy()
+        else:
+            nfa.classifier = None
         return nfa
 
     def add_state(self, state):
@@ -47,24 +53,64 @@ class NFA:
 
 def atom(char, category):
     nfa = NFA()
+    nfa.classifier = CharClassifier([ord(char), ord(char) + 1])
     nfa.add_state(0)
     nfa.add_state(1)
-    nfa.add_transition(0, 1, char)
+    nfa.add_transition(0, 1, 1)
     nfa.mark_starting(0)
     nfa.mark_accepting(1, category)
     return nfa
 
 
+def char_set(markers, accept, category):
+    nfa = NFA()
+    nfa.classifier = CharClassifier(markers)
+    nfa.add_state(0)
+    nfa.add_state(1)
+    for domain in accept:
+        nfa.add_transition(0, 1, domain)
+    nfa.mark_starting(0)
+    nfa.mark_accepting(1, category)
+    return nfa
+
+
+def neg_set(markers, accept, category):
+    nfa = NFA()
+    nfa.classifier = CharClassifier(markers)
+    nfa.add_state(0)
+    nfa.add_state(1)
+    for domain in range(len(markers) + 1):
+        if domain not in accept:
+            nfa.add_transition(0, 1, domain)
+    nfa.mark_starting(0)
+    nfa.mark_accepting(1, category)
+    return nfa
+
+
+def char_range(start, end):
+    markers = make_markers([ord(start), ord(end) + 1])
+    accept = {1}
+    return markers, accept
+
+
 def cat(nfa_list):
     nfa_list = list(nfa_list)
     cat_nfa = NFA()
-    for i, nfa in enumerate(nfa_list):  # add everything to cat_nfa
+    cat_classifier, class_maps = merge_classifiers(nfa.classifier for nfa in nfa_list)
+    cat_nfa.classifier = cat_classifier
+    for i, z in enumerate(zip(nfa_list, class_maps)):
+        nfa, class_map = z  # add everything to cat_nfa
         for start, d in nfa.trans_matrix.items():
             cat_nfa.add_state((i, start))
             for char, end_set in d.items():
-                for end in end_set:
-                    cat_nfa.add_transition((i, start), (i, end), char)
-        cat_nfa.alphabet |= nfa.alphabet
+                if char == epsilon:
+                    for end in end_set:
+                        cat_nfa.add_transition((i, start), (i, end), epsilon)
+                else:
+                    for domain in class_map[char]:
+                        for end in end_set:
+                            cat_nfa.add_transition((i, start), (i, end), domain)
+                            # cat_nfa.alphabet |= nfa.alphabet
 
     for i in range(len(nfa_list) - 1):  # link these nfa
         this = nfa_list[i]
@@ -84,13 +130,21 @@ def cat(nfa_list):
 def alt(nfa_list):
     nfa_list = list(nfa_list)
     alt_nfa = NFA()
-    for i, nfa in enumerate(nfa_list):
+    alt_classifier, class_maps = merge_classifiers(nfa.classifier for nfa in nfa_list)
+    alt_nfa.classifier = alt_classifier
+    for i, z in enumerate(zip(nfa_list, class_maps)):
+        nfa, class_map = z
         for start, d in nfa.trans_matrix.items():
             alt_nfa.add_state((i, start))
             for char, end_set in d.items():
-                for end in end_set:
-                    alt_nfa.add_transition((i, start), (i, end), char)
-        alt_nfa.alphabet |= nfa.alphabet
+                if char == epsilon:
+                    for end in end_set:
+                        alt_nfa.add_transition((i, start), (i, end), epsilon)
+                else:
+                    for domain in class_map[char]:
+                        for end in end_set:
+                            alt_nfa.add_transition((i, start), (i, end), domain)
+        # alt_nfa.alphabet |= nfa.alphabet
         for state, category in nfa.accepting_states.items():
             alt_nfa.mark_accepting((i, state), category)
 
