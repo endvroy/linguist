@@ -14,9 +14,7 @@ class TestScanner(unittest.TestCase):
         w = alt([atom(x, 2) for x in 'aif'])
         nfa2 = cat([w, closure(w)])
         nfa = alt([nfa1, nfa2])
-        dfa = nfa_to_dfa(nfa, category_info)
-        min_dfa = minimize_dfa(dfa)
-        scanner = Scanner(min_dfa, category_info)
+        scanner = scanner_builder(nfa, category_info)
         tokens = scanner.tokens('if')
         self.assertEqual(list(tokens), [(1, 'if'), (eof, '')])
         tokens = scanner.tokens('ia')
@@ -38,9 +36,7 @@ class TestScanner(unittest.TestCase):
         nfa3 = cat([space, closure(space)])
         nfa4 = atom('=', 4)
         nfa = alt([nfa0, nfa1, nfa2, nfa3, nfa4])
-        dfa = nfa_to_dfa(nfa, category_info)
-        min_dfa = minimize_dfa(dfa)
-        scanner = Scanner(min_dfa, category_info)
+        scanner = scanner_builder(nfa, category_info)
         tokens = scanner.tokens('if  var = r31')
         self.assertEqual(list(tokens),
                          [(1, 'if'),
@@ -68,9 +64,7 @@ class TestScanner(unittest.TestCase):
         nfa3 = cat([space, closure(space)])
         nfa4 = atom('=', 4)
         nfa = alt([nfa0, nfa1, nfa2, nfa3, nfa4])
-        dfa = nfa_to_dfa(nfa, category_info)
-        min_dfa = minimize_dfa(dfa)
-        scanner = Scanner(min_dfa, category_info)
+        scanner = scanner_builder(nfa, category_info)
         tokens = scanner.tokens('if  var = r31')
         self.assertEqual(list(tokens),
                          [(1, 'if'),
@@ -95,9 +89,7 @@ class TestScanner(unittest.TestCase):
         nfa3 = cat([space, closure(space)])
         nfa4 = atom('=', 4)
         nfa = alt([nfa0, nfa1, nfa2, nfa3, nfa4])
-        dfa = nfa_to_dfa(nfa, category_info)
-        min_dfa = minimize_dfa(dfa)
-        scanner = Scanner(min_dfa, category_info)
+        scanner = scanner_builder(nfa, category_info)
         tokens = scanner.tokens('if  var = r31')
         self.assertEqual(list(tokens),
                          [(1, 'if'),

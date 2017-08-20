@@ -1,5 +1,14 @@
 import warnings
 from metachar import eof
+from scanner.nfa_to_dfa import nfa_to_dfa
+from scanner.minimize_dfa import minimize_dfa
+
+
+def scanner_builder(nfa, category_info):
+    dfa = nfa_to_dfa(nfa, category_info)
+    min_dfa = minimize_dfa(dfa)
+    scanner = Scanner(min_dfa, category_info)
+    return scanner
 
 
 class Scanner:
