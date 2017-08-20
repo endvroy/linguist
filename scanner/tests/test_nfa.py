@@ -83,6 +83,15 @@ class TestCopy(unittest.TestCase):
 
 
 class TestUtils(unittest.TestCase):
+    def test_char_range(self):
+        markers, accept = char_range('a', 'z')
+        nfa = char_set(markers, accept, 0)
+        self.assertEqual(0, nfa.classifier.classify(chr(ord('a') - 1)))
+        self.assertEqual(1, nfa.classifier.classify('a'))
+        self.assertEqual(1, nfa.classifier.classify('t'))
+        self.assertEqual(1, nfa.classifier.classify('z'))
+        self.assertEqual(2, nfa.classifier.classify(chr(ord('z') + 1)))
+
     def test_cat(self):
         nfa1 = build_nfa1()
         nfa2 = build_test_nfa()

@@ -93,6 +93,17 @@ def char_range(start, end):
     return markers, accept
 
 
+def dot(category):
+    nfa = NFA()
+    nfa.classifier = CharClassifier([0])
+    nfa.add_state(0)
+    nfa.add_state(1)
+    nfa.add_transition(0, 1, 1)
+    nfa.mark_starting(0)
+    nfa.mark_accepting(1, category)
+    return nfa
+
+
 def cat(nfa_list):
     nfa_list = list(nfa_list)
     cat_nfa = NFA()

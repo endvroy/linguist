@@ -20,7 +20,7 @@ class CharClassifier:
         return CharClassifier(self.markers)
 
 
-def merge_markers(a, b):
+def merge_2_markers(a, b):
     ret = []
     i = 0
     j = 0
@@ -52,9 +52,15 @@ def map_char_class(original_markers, new_markers):
     return class_map
 
 
+def merge_markers(markers):
+    markers = list(markers)
+    new_markers = reduce(merge_2_markers, markers)
+    class_maps = [map_char_class(x, new_markers) for x in markers]
+    return new_markers, class_maps
+
+
 def merge_classifiers(classifiers):
     classifiers = list(classifiers)
-    new_markers = reduce(merge_markers, (x.markers for x in classifiers))
+    new_markers, class_maps = merge_classifiers(x.markers for x in classifiers)
     new_classifier = CharClassifier(new_markers)
-    class_maps = [map_char_class(x.markers, new_markers) for x in classifiers]
     return new_classifier, class_maps
