@@ -61,6 +61,6 @@ def merge_markers(markers):
 
 def merge_classifiers(classifiers):
     classifiers = list(classifiers)
-    new_markers, class_maps = merge_classifiers(x.markers for x in classifiers)
+    new_markers, class_maps = merge_markers(x.markers for x in classifiers)
     new_classifier = CharClassifier(new_markers)
     return new_classifier, class_maps

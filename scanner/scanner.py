@@ -47,3 +47,13 @@ class Scanner:
                 token = token[0], action(token[1])
             yield token
         yield (eof, '')
+
+
+class CategoryInfo:
+    def __init__(self, name, priority, action=None):
+        self.name = name
+        self.priority = priority
+        self.action = action
+
+    def __repr__(self):
+        return f'CategoryInfo({self.name}, {self.priority}, {self.action})'

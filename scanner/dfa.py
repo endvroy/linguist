@@ -10,13 +10,3 @@ class DFA:
         self.accepting_states = accepting_states
         self.alphabet = alphabet
         self.classifier = classifier
-
-
-class CategoryInfo:
-    def __init__(self, name, priority, action=None):
-        self.name = name
-        self.priority = priority
-        self.action = action
-
-    def __repr__(self):
-        return f'CategoryInfo({self.name}, {self.priority}, {self.action})'

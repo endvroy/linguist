@@ -1,9 +1,8 @@
 import unittest
 
-from scanner.dfa import CategoryInfo
 from scanner.minimize_dfa import *
-from scanner.nfa import *
 from scanner.nfa_to_dfa import *
+from scanner.re_utils import atom, cat, alt, closure
 from scanner.scanner import *
 
 

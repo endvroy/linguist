@@ -2,7 +2,7 @@ import unittest
 
 from scanner.tests.tools import build_test_nfa, draw_dfa
 from scanner.nfa import NFA
-from scanner.dfa import CategoryInfo
+from scanner.scanner import CategoryInfo
 from scanner.nfa_to_dfa import *
 
 
