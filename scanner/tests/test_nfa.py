@@ -1,8 +1,6 @@
 import unittest
-
 from scanner.nfa import *
-
-from scanner.tests.tools import build_test_nfa, build_nfa1, draw_nfa
+from scanner.tests.tools import build_test_nfa
 
 
 class TestAddState(unittest.TestCase):
@@ -80,7 +78,6 @@ class TestCopy(unittest.TestCase):
         self.assertEqual(nfa.starting_state, 0)
         self.assertFalse(1337 in nfa.accepting_states)
         self.assertFalse('leet' in nfa.alphabet)
-
 
 
 if __name__ == '__main__':
