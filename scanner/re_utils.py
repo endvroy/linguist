@@ -1,6 +1,7 @@
 from metachar import epsilon
 from scanner.char_classifier import CharClassifier, make_markers, merge_classifiers
 from scanner.nfa import NFA
+from scanner.char_classifier import merge_markers
 
 
 def atom(char, category):
@@ -39,9 +40,26 @@ def neg_set(markers, accept, category):
     return nfa
 
 
+def char_member(char):
+    markers = make_markers([ord(char), ord(char) + 1])
+    accept = {1}
+    return markers, accept
+
+
 def char_range(start, end):
     markers = make_markers([ord(start), ord(end) + 1])
     accept = {1}
+    return markers, accept
+
+
+def merge_members(mags):
+    markers, class_maps = merge_markers(x[0] for x in mags)
+    accept = set()
+    for i, mag in enumerate(mags):
+        acc_set = mag[1]
+        for acc in acc_set:
+            for new_acc in class_maps[i][acc]:
+                accept.add(new_acc)
     return markers, accept
 
 

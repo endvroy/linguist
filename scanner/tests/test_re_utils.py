@@ -1,4 +1,4 @@
-from scanner.re_utils import char_set, char_range, cat, alt, closure
+from scanner.re_utils import *
 from scanner.tests.tools import build_test_nfa, build_nfa1, draw_nfa
 import unittest
 
@@ -12,6 +12,19 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(1, nfa.classifier.classify('t'))
         self.assertEqual(1, nfa.classifier.classify('z'))
         self.assertEqual(2, nfa.classifier.classify(chr(ord('z') + 1)))
+
+    def test_merge_members(self):
+        a = char_range('a', 'z')
+        b = char_member('_')
+        c = char_range('A', 'Z')
+        markers, accept = merge_members([a, b, c])
+        self.assertEqual([ord('A'),
+                          ord('Z') + 1,
+                          ord('_'),
+                          ord('_') + 1,
+                          ord('a'),
+                          ord('z') + 1], markers)
+        self.assertEqual({1, 3, 5}, accept)
 
     def test_cat(self):
         nfa1 = build_nfa1()
