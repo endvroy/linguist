@@ -2,7 +2,7 @@ import unittest
 
 from scanner.minimize_dfa import *
 from scanner.nfa_to_dfa import *
-from scanner.re_utils import atom, cat, alt, closure
+from scanner.re_utils import atom, cat, alt, k_closure
 from scanner.scanner import *
 
 
@@ -12,7 +12,7 @@ class TestScanner(unittest.TestCase):
                          2: CategoryInfo('id', -2)}
         nfa1 = cat([atom('i', -1), atom('f', 1)])
         w = alt([atom(x, 2) for x in 'aif'])
-        nfa2 = cat([w, closure(w)])
+        nfa2 = cat([w, k_closure(w)])
         nfa = alt([nfa1, nfa2])
         scanner = scanner_builder(nfa, category_info)
         tokens = scanner.tokens('if')
@@ -31,9 +31,9 @@ class TestScanner(unittest.TestCase):
         nfa0 = cat([atom('r', -1), d, d])
         nfa1 = cat([atom('i', -1), atom('f', 1)])
         w = alt([atom(chr(x), 2) for x in range(ord('a'), ord('z') + 1)])
-        nfa2 = cat([w, closure(w)])
+        nfa2 = cat([w, k_closure(w)])
         space = atom(' ', 3)
-        nfa3 = cat([space, closure(space)])
+        nfa3 = cat([space, k_closure(space)])
         nfa4 = atom('=', 4)
         nfa = alt([nfa0, nfa1, nfa2, nfa3, nfa4])
         scanner = scanner_builder(nfa, category_info)
@@ -59,9 +59,9 @@ class TestScanner(unittest.TestCase):
         nfa0 = cat([atom('r', -1), d, d])
         nfa1 = cat([atom('i', -1), atom('f', 1)])
         w = alt([atom(chr(x), 2) for x in range(ord('a'), ord('z') + 1)])
-        nfa2 = cat([w, closure(w)])
+        nfa2 = cat([w, k_closure(w)])
         space = atom(' ', 3)
-        nfa3 = cat([space, closure(space)])
+        nfa3 = cat([space, k_closure(space)])
         nfa4 = atom('=', 4)
         nfa = alt([nfa0, nfa1, nfa2, nfa3, nfa4])
         scanner = scanner_builder(nfa, category_info)
@@ -84,9 +84,9 @@ class TestScanner(unittest.TestCase):
         nfa0 = cat([atom('r', -1), d, d])
         nfa1 = cat([atom('i', -1), atom('f', 1)])
         w = alt([atom(chr(x), 2) for x in range(ord('a'), ord('z') + 1)])
-        nfa2 = cat([w, closure(w)])
+        nfa2 = cat([w, k_closure(w)])
         space = atom(' ', 3)
-        nfa3 = cat([space, closure(space)])
+        nfa3 = cat([space, k_closure(space)])
         nfa4 = atom('=', 4)
         nfa = alt([nfa0, nfa1, nfa2, nfa3, nfa4])
         scanner = scanner_builder(nfa, category_info)

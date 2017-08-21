@@ -40,7 +40,7 @@ class TestUtils(unittest.TestCase):
 
     def test_closure(self):
         nfa = build_nfa1()
-        c_nfa = closure(nfa)
+        c_nfa = k_closure(nfa)
         draw_nfa(c_nfa, 'closure_nfa')
 
 

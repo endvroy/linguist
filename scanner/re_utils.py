@@ -140,7 +140,7 @@ def alt(nfa_list):
     return alt_nfa
 
 
-def closure(nfa: NFA):
+def k_closure(nfa: NFA):
     c_nfa = nfa.copy()
     for state in c_nfa.accepting_states:
         c_nfa.add_transition(c_nfa.starting_state,
