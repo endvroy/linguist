@@ -139,4 +139,4 @@ class LALRRuleSet(RuleSet):
                         else:
                             action[i][next_sym[1]] = entry  # shift
 
-        return action, goto  # action table, goto table
+        return cc, action, goto  # action table, goto table

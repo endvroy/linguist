@@ -125,7 +125,7 @@ class TestRuleSet(unittest.TestCase):
         rule_set.add_rule(pair, d(t('('), t(')')))
         rule_set.mark_goal(goal)
 
-        action, goto = rule_set.calc_parse_table()
+        cc, action, goto = rule_set.calc_parse_table()
         correct_action = [{'(': (Action.shift,)},
                           {'(': (Action.shift,), eof: (Action.accept, 0, 0)},
                           {'(': (Action.reduce, 1, 1), eof: (Action.reduce, 1, 1)},
@@ -166,7 +166,7 @@ class TestRuleSet(unittest.TestCase):
         rule_set.add_rule(X, d(t('b')))
         rule_set.mark_goal(S)
 
-        action, goto = rule_set.calc_parse_table()
+        cc, action, goto = rule_set.calc_parse_table()
         correct_action = [{'a': (Action.shift,), 'b': (Action.shift,)},
                           {'a': (Action.shift,), 'b': (Action.shift,)},
                           {'a': (Action.shift,), 'b': (Action.shift,)},

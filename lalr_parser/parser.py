@@ -1,10 +1,19 @@
 from lalr_parser.rule_set import Action, t, nt
+from metachar import epsilon
+
+
+def pop_len(derives):
+    i = 0
+    for x in derives:
+        if x != t(epsilon):
+            i += 1
+    return i
 
 
 class LALRParser:
     def __init__(self, rule_set, rule_actions):
         self.rule_set = rule_set
-        self.action, self.goto = self.rule_set.calc_parse_table()
+        self.cc, self.action, self.goto = self.rule_set.calc_parse_table()
         self.rule_actions = rule_actions
 
     def parse(self, tokens, repo=None):
@@ -37,10 +46,13 @@ class LALRParser:
                 elif action[0] == Action.reduce:
                     ntid, rule_id = action[1:]
                     derives = self.rule_set.nt_rules[ntid][rule_id]
-                    split_point = -len(derives)
-                    data_list = data_stack[split_point:]
-                    data_stack = data_stack[:split_point]
-                    state_stack = state_stack[:split_point]
+                    split_point = -pop_len(derives)
+                    if split_point == 0:
+                        data_list = []
+                    else:
+                        data_list = data_stack[split_point:]
+                        data_stack = data_stack[:split_point]
+                        state_stack = state_stack[:split_point]
                     # perform actions
                     if self.rule_actions[(ntid, rule_id)] is not None:
                         data = self.rule_actions[(ntid, rule_id)](data_list, repo)
