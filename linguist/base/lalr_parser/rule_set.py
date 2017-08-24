@@ -1,7 +1,7 @@
 from enum import Enum, unique
 
+from linguist.base.lalr_parser.parser_base import RuleSet, d, t
 from linguist.base.metachar import eof, epsilon
-from linguist.base.parserlib.rule_set import RuleSet, d, t, nt
 
 
 @unique

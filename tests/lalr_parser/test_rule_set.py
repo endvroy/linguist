@@ -2,6 +2,7 @@ import itertools
 import unittest
 
 from linguist.base.lalr_parser.rule_set import *
+from linguist.base.lalr_parser.parser_base import d, t, nt
 
 
 def build_test_rule():

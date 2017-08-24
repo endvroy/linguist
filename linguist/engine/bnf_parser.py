@@ -1,4 +1,5 @@
-from linguist.base.lalr_parser.rule_set import LALRRuleSet, d, t, nt
+from linguist.base.lalr_parser.rule_set import LALRRuleSet
+from linguist.base.lalr_parser.parser_base import d, t, nt
 from linguist.base.scanner.scanner import CategoryInfo, scanner_builder
 
 import linguist.base.scanner.re_utils as re_utils

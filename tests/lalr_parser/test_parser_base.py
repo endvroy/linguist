@@ -1,6 +1,6 @@
 import unittest
 
-from linguist.base.parserlib.rule_set import *
+from linguist.base.lalr_parser.parser_base import *
 
 
 class TestRuleSet(unittest.TestCase):

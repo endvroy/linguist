@@ -1,4 +1,5 @@
-from linguist.base.lalr_parser.rule_set import Action, t, nt
+from linguist.base.lalr_parser.rule_set import Action
+from linguist.base.lalr_parser.parser_base import d, t, nt
 from linguist.base.metachar import epsilon
 
 
