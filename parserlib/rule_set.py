@@ -20,7 +20,7 @@ class RuleSet:
         self.goal = ntid
 
     def add_rule(self, ntid, derives):
-        self.nt_rules[ntid].append(derives)
+        self.nt_rules[ntid].append(tuple(derives))
 
     def calc_first_sets(self):
         first_sets = {ntid: set() for ntid in self.nt_rules}
