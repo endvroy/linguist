@@ -47,6 +47,8 @@ def char_member(char):
 
 
 def char_range(start, end):
+    if ord(start) > ord(end):
+        raise ValueError('range values reversed')
     markers = make_markers([ord(start), ord(end) + 1])
     accept = {1}
     return markers, accept
