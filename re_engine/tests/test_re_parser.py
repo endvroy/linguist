@@ -45,6 +45,25 @@ class TestGrammar(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             list(tks)
 
+    def test_parser_2(self):
+        tokens = re_scanner.tokens(r'[^^0-9]+')
+        nfa = re_parser.parse(tokens, 0)
+        scanner = scanner_builder(nfa, {0: CategoryInfo('dummy', 0)})
+
+        tks = scanner.tokens('a\\')
+        self.assertEqual([(0, 'a\\'), (eof, '')], list(tks))
+
+        tks = scanner.tokens('abc麻辣香锅')
+        self.assertEqual([(0, 'abc麻辣香锅'), (eof, '')], list(tks))
+
+        tks = scanner.tokens('^')
+        with self.assertRaises(RuntimeError):
+            list(tks)
+
+        tks = scanner.tokens('4')
+        with self.assertRaises(RuntimeError):
+            list(tks)
+
     def test_errornous_re(self):
         tokens = re_scanner.tokens(r'[a-m-z]')
         with self.assertRaises(RuntimeError):

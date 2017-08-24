@@ -45,7 +45,7 @@ class Scanner:
                 index = end
                 return token
             else:
-                raise RuntimeError(f"unknown token near position {end}")
+                raise RuntimeError(f"illegal char near position {end}")
 
         while index < limit:
             token = next_token()

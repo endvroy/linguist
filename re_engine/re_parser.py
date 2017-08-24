@@ -29,9 +29,9 @@ def rule_cat_base(data_list, repo):
 
 
 @pb.rule('''cat_elmt = k_closure
-                        |p_closure
-                        |opt_closure
-                        |basic_elmt''')
+                        | p_closure
+                        | opt_closure
+                        | basic_elmt''')
 def rule_cat_elmt(data_list, repo):
     return data_list[0]
 
@@ -83,15 +83,15 @@ def rule_literal(data_list, repo):
 
 # esc_char
 @pb.rule('''esc_char = BSLASH LPAREN
-                        |BSLASH RPAREN
-                        |BSLASH LBRACKET
-                        |BSLASH RBRACKET
-                        |BSLASH STAR
-                        |BSLASH DOT
-                        |BSLASH PLUS
-                        |BSLASH QMARK
-                        |BSLASH BSLASH
-                        |BSLASH ALT_DELIM''')
+                        | BSLASH RPAREN
+                        | BSLASH LBRACKET
+                        | BSLASH RBRACKET
+                        | BSLASH STAR
+                        | BSLASH DOT
+                        | BSLASH PLUS
+                        | BSLASH QMARK
+                        | BSLASH BSLASH
+                        | BSLASH ALT_DELIM''')
 def rule_esc_char(data_list, repo):
     return data_list[1]
 
@@ -110,21 +110,21 @@ def rule_char_set(data_list, repo):
 
 
 # pos_set
-@pb.rule('pos_set = LBRACKET set_lang RBRACKET')
+@pb.rule('pos_set = LBRACKET pos_lang RBRACKET')
 def rule_pos_set(data_list, repo):
     return re_utils.char_set(*data_list[1], repo)
 
 
 # neg_set
-@pb.rule('neg_set = LBRACKET CARET set_lang RBRACKET')
+@pb.rule('neg_set = LBRACKET CARET neg_lang RBRACKET')
 def rule_neg_set(data_list, repo):
-    return re_utils.char_set(*data_list[1], repo)
+    return re_utils.neg_set(*data_list[2], repo)
 
 
-# set_lang
-@pb.rule('''set_lang = set_char remaining
+# pos_lang
+@pb.rule('''pos_lang = set_char remaining
                         | DASH remaining''')
-def rule_set_lang(data_list, repo):
+def rule_pos_lang(data_list, repo):
     data_list[0] = re_utils.char_member(data_list[0])
     if data_list[1] is None:
         return data_list[0]
@@ -132,8 +132,28 @@ def rule_set_lang(data_list, repo):
         return re_utils.merge_members(data_list)
 
 
-@pb.rule('set_lang = char_range remaining')
-def rule_set_lang_range(data_list, repo):
+@pb.rule('pos_lang = char_range remaining')
+def rule_pos_lang_range(data_list, repo):
+    if data_list[1] is None:
+        return data_list[0]
+    else:
+        return re_utils.merge_members(data_list)
+
+
+# neg_lang
+@pb.rule('''neg_lang = set_char remaining
+                        | DASH remaining
+                        | CARET remaining''')
+def rule_pos_lang(data_list, repo):
+    data_list[0] = re_utils.char_member(data_list[0])
+    if data_list[1] is None:
+        return data_list[0]
+    else:
+        return re_utils.merge_members(data_list)
+
+
+@pb.rule('neg_lang = char_range remaining')
+def rule_pos_lang_range(data_list, repo):
     if data_list[1] is None:
         return data_list[0]
     else:
