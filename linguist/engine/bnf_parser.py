@@ -1,8 +1,9 @@
-import scanner.re_utils as re_utils
-from scanner.scanner import CategoryInfo, scanner_builder
-from lalr_parser.rule_set import LALRRuleSet, d, t, nt
-from metachar import epsilon
-from lalr_parser.parser import LALRParser
+from linguist.base.lalr_parser.rule_set import LALRRuleSet, d, t, nt
+from linguist.base.scanner.scanner import CategoryInfo, scanner_builder
+
+import linguist.base.scanner.re_utils as re_utils
+from linguist.base.lalr_parser.parser import LALRParser
+from linguist.base.metachar import epsilon
 
 category_info = {
     2: CategoryInfo('NAME', -2),

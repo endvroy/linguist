@@ -1,8 +1,9 @@
 import unittest
 
-from scanner.nfa import NFA
-from scanner.nfa_to_dfa import *
-from scanner.scanner import CategoryInfo
+from linguist.base.scanner.nfa import NFA
+from linguist.base.scanner.scanner import CategoryInfo
+
+from linguist.base.scanner.nfa_to_dfa import *
 from tests.scanner.tools import build_test_nfa, draw_dfa
 
 

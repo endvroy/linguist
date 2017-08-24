@@ -1,7 +1,8 @@
-from re_engine.re_parser import *
-from scanner.scanner import scanner_builder, CategoryInfo
-from metachar import eof
 import unittest
+
+from linguist.base.metachar import eof
+from linguist.base.scanner.scanner import scanner_builder, CategoryInfo
+from linguist.engine.re_parser import *
 
 
 class TestLexer(unittest.TestCase):

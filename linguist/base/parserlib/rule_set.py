@@ -1,4 +1,4 @@
-from metachar import epsilon, eof
+from linguist.base.metachar import epsilon, eof
 
 
 class RuleSet:

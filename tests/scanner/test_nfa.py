@@ -1,6 +1,6 @@
 import unittest
 
-from scanner.nfa import *
+from linguist.base.scanner.nfa import *
 from tests.scanner.tools import build_test_nfa
 
 

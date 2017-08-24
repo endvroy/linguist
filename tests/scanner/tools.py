@@ -1,10 +1,12 @@
-from graphviz import Digraph
-from scanner.nfa import NFA
-from scanner.dfa import DFA
-from scanner.nfa_to_dfa import dict_to_dfa_matrix
-from metachar import epsilon
-from scanner.char_classifier import CharClassifier
 import os
+
+from graphviz import Digraph
+from linguist.base.scanner.char_classifier import CharClassifier
+from linguist.base.scanner.dfa import DFA
+from linguist.base.scanner.nfa import NFA
+
+from linguist.base.metachar import epsilon
+from linguist.base.scanner.nfa_to_dfa import dict_to_dfa_matrix
 
 
 def build_test_nfa():  # example NFA on EC pp.51

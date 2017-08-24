@@ -1,6 +1,7 @@
-import scanner.re_utils as re_utils
-from scanner.scanner import CategoryInfo
-from bnf_engine.partial_builder import PartialBuilder
+from linguist.base.scanner.scanner import CategoryInfo
+
+import linguist.base.scanner.re_utils as re_utils
+from linguist.engine.partial_builder import PartialBuilder
 
 pb = PartialBuilder()
 pb.goal('alt')

@@ -1,6 +1,7 @@
-import unittest
-from lalr_parser.rule_set import *
 import itertools
+import unittest
+
+from linguist.base.lalr_parser.rule_set import *
 
 
 def build_test_rule():

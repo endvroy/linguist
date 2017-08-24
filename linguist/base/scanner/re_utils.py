@@ -1,7 +1,8 @@
-from metachar import epsilon
-from scanner.char_classifier import CharClassifier, make_markers, merge_classifiers
-from scanner.nfa import NFA
-from scanner.char_classifier import merge_markers
+from linguist.base.scanner.char_classifier import CharClassifier, make_markers, merge_classifiers
+from linguist.base.scanner.char_classifier import merge_markers
+
+from linguist.base.metachar import epsilon
+from linguist.base.scanner.nfa import NFA
 
 
 def atom(char, category):

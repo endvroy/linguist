@@ -1,6 +1,7 @@
 import unittest
-from bnf_engine.bnf_parser import *
-from metachar import eof
+
+from linguist.base.metachar import eof
+from linguist.engine.bnf_parser import *
 
 
 class Test(unittest.TestCase):

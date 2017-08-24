@@ -1,9 +1,10 @@
-from bnf_engine.bnf_parser import parser as bnf_parser, scanner as bnf_scanner
-from lalr_parser.parser import LALRParser
-from lalr_parser.rule_set import LALRRuleSet
-from metachar import epsilon
-from scanner.re_utils import alt
-from scanner.scanner import scanner_builder
+from linguist.base.lalr_parser.rule_set import LALRRuleSet
+from linguist.base.scanner.scanner import scanner_builder
+
+from linguist.base.lalr_parser.parser import LALRParser
+from linguist.base.metachar import epsilon
+from linguist.base.scanner.re_utils import alt
+from linguist.engine.bnf_parser import parser as bnf_parser, scanner as bnf_scanner
 
 
 class PartialBuilder:

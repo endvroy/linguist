@@ -1,5 +1,6 @@
-from scanner.char_classifier import *
 import unittest
+
+from linguist.base.scanner.char_classifier import *
 
 
 class TestClassifier(unittest.TestCase):

@@ -1,6 +1,8 @@
 from collections import defaultdict
-from scanner.nfa_to_dfa import dict_to_dfa_matrix
-from scanner.dfa import DFA
+
+from linguist.base.scanner.dfa import DFA
+
+from linguist.base.scanner.nfa_to_dfa import dict_to_dfa_matrix
 
 
 class RevIndex:

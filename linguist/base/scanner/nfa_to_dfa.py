@@ -1,6 +1,7 @@
 from collections import defaultdict
-from metachar import epsilon
-from scanner.dfa import DFA
+
+from linguist.base.metachar import epsilon
+from linguist.base.scanner.dfa import DFA
 
 
 def epsilon_closure(nfa, states):

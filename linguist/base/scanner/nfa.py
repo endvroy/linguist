@@ -1,6 +1,7 @@
 import copy
 from collections import defaultdict
-from metachar import epsilon
+
+from linguist.base.metachar import epsilon
 
 
 class NFA:

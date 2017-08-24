@@ -1,7 +1,9 @@
 import warnings
-from metachar import eof
-from scanner.nfa_to_dfa import nfa_to_dfa
-from scanner.minimize_dfa import minimize_dfa
+
+from linguist.base.scanner.minimize_dfa import minimize_dfa
+
+from linguist.base.metachar import eof
+from linguist.base.scanner.nfa_to_dfa import nfa_to_dfa
 
 
 def scanner_builder(nfa, category_info):

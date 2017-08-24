@@ -1,7 +1,9 @@
 import unittest
-from lalr_parser.parser import *
-from lalr_parser.rule_set import LALRRuleSet, d, t, nt
-from metachar import eof
+
+from linguist.base.lalr_parser.rule_set import LALRRuleSet, d, t, nt
+
+from linguist.base.lalr_parser.parser import *
+from linguist.base.metachar import eof
 
 
 class TestParser(unittest.TestCase):

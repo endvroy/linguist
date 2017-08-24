@@ -1,5 +1,6 @@
-from bnf_engine.lang_builder import *
 import unittest
+
+from linguist.lang_builder import *
 
 
 class Test(unittest.TestCase):

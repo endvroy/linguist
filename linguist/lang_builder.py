@@ -1,10 +1,11 @@
-from bnf_engine.bnf_parser import name as name_nfa
-from bnf_engine.bnf_parser import category_info
-from bnf_engine.partial_builder import PartialBuilder
-from scanner.scanner import CategoryInfo
-from re_engine.re_parser import re_scanner, re_parser
-from scanner.nfa_to_dfa import nfa_to_dfa
-from scanner.minimize_dfa import minimize_dfa
+from linguist.base.scanner.minimize_dfa import minimize_dfa
+from linguist.base.scanner.scanner import CategoryInfo
+
+from linguist.base.scanner.nfa_to_dfa import nfa_to_dfa
+from linguist.engine.bnf_parser import category_info
+from linguist.engine.bnf_parser import name as name_nfa
+from linguist.engine.re_parser import re_scanner, re_parser
+from .engine.partial_builder import PartialBuilder
 
 name_dfa = minimize_dfa(nfa_to_dfa(name_nfa, category_info))
 

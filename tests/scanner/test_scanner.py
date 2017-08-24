@@ -1,9 +1,8 @@
 import unittest
 
-from scanner.minimize_dfa import *
-from scanner.nfa_to_dfa import *
-from scanner.re_utils import atom, cat, alt, k_closure
-from scanner.scanner import *
+from linguist.base.scanner.minimize_dfa import *
+from linguist.base.scanner.re_utils import atom, cat, alt, k_closure
+from linguist.base.scanner.scanner import *
 
 
 class TestScanner(unittest.TestCase):
