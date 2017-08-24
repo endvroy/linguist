@@ -1,6 +1,7 @@
-from scanner.re_utils import *
-from scanner.tests.tools import build_test_nfa, build_nfa1, draw_nfa
 import unittest
+
+from scanner.re_utils import *
+from tests.scanner.tools import build_test_nfa, build_nfa1, draw_nfa
 
 
 class TestUtils(unittest.TestCase):

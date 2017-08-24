@@ -1,9 +1,9 @@
 import unittest
 
-from scanner.tests.tools import build_test_nfa, draw_dfa
 from scanner.nfa import NFA
-from scanner.scanner import CategoryInfo
 from scanner.nfa_to_dfa import *
+from scanner.scanner import CategoryInfo
+from tests.scanner.tools import build_test_nfa, draw_dfa
 
 
 class TestSubsetConstruction(unittest.TestCase):

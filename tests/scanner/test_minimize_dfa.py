@@ -1,7 +1,8 @@
+import unittest
+
 from scanner.minimize_dfa import *
 from scanner.nfa_to_dfa import dict_to_dfa_matrix
-from scanner.tests.tools import build_test_dfa, build_test_dfa_2, draw_dfa
-import unittest
+from tests.scanner.tools import build_test_dfa, build_test_dfa_2, draw_dfa
 
 
 class TestBuilder(unittest.TestCase):

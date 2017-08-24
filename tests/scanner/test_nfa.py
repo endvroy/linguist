@@ -1,6 +1,7 @@
 import unittest
+
 from scanner.nfa import *
-from scanner.tests.tools import build_test_nfa
+from tests.scanner.tools import build_test_nfa
 
 
 class TestAddState(unittest.TestCase):
