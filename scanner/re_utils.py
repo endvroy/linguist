@@ -150,3 +150,18 @@ def k_closure(nfa: NFA):
                              c_nfa.starting_state,
                              epsilon)
     return c_nfa
+
+
+def p_closure(nfa):
+    nfa1 = nfa.copy()
+    nfa2 = nfa.copy()
+    return cat([nfa1, k_closure(nfa2)])
+
+
+def opt_closure(nfa):
+    opt_nfa = nfa.copy()
+    for state in opt_nfa.accepting_states:
+        opt_nfa.add_transition(opt_nfa.starting_state,
+                               state,
+                               epsilon)
+    return opt_nfa
