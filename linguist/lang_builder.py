@@ -5,7 +5,7 @@ from linguist.base.scanner.nfa_to_dfa import nfa_to_dfa
 from linguist.engine.bnf_parser import category_info
 from linguist.engine.bnf_parser import name as name_nfa
 from linguist.engine.re_parser import re_scanner, re_parser
-from .engine.partial_builder import PartialBuilder
+from linguist.engine.partial_builder import PartialBuilder
 
 name_dfa = minimize_dfa(nfa_to_dfa(name_nfa, category_info))
 
