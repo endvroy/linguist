@@ -1,9 +1,9 @@
 import warnings
 
 from linguist.base.scanner.minimize_dfa import minimize_dfa
-
-from linguist.base.metachar import eof
 from linguist.base.scanner.nfa_to_dfa import nfa_to_dfa
+from linguist.base.metachar import eof
+from linguist.exceptions import ScanError
 
 
 def scanner_builder(nfa, category_info):
@@ -47,7 +47,7 @@ class Scanner:
                 index = end
                 return token
             else:
-                raise RuntimeError(f"illegal char near position {end}")
+                raise ScanError(f"illegal character '{text[end]}' near position {end}")
 
         while index < limit:
             token = next_token()

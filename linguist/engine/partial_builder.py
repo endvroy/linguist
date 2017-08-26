@@ -1,10 +1,10 @@
-from linguist.base.lalr_parser.rule_set import LALRRuleSet
 from linguist.base.scanner.scanner import scanner_builder
-
+from linguist.base.lalr_parser.rule_set import LALRRuleSet
 from linguist.base.lalr_parser.parser import LALRParser
 from linguist.base.metachar import epsilon
 from linguist.base.scanner.re_utils import alt
-from linguist.engine.bnf_parser import parser as bnf_parser, scanner as bnf_scanner
+from linguist.engine.bnf_parser import bnf_scanner, bnf_parser
+from linguist.exceptions import LangBuildError, LALRTableBuildError, ScanError, ParseError
 
 
 class PartialBuilder:
@@ -23,8 +23,12 @@ class PartialBuilder:
         self.goal_name = name
 
     def rule(self, rule_str):
-        tokens = bnf_scanner.tokens(rule_str)
-        name, derives_list = bnf_parser.parse(tokens)
+        try:
+            tokens = bnf_scanner.tokens(rule_str)
+            name, derives_list = bnf_parser.parse(tokens)
+        except (ScanError, ParseError):
+            raise LangBuildError
+
         if name in self.raw_rules:
             rule_range = list(range(len(self.raw_rules[name]),
                                     len(self.raw_rules[name]) + len(derives_list)))
@@ -48,9 +52,9 @@ class PartialBuilder:
 
     def build(self):
         if self.goal_name is None:
-            raise RuntimeError('goal symbol not set')
+            raise LangBuildError('goal symbol not set')
         if self.goal_name not in self.name_map:
-            raise RuntimeError(f'symbol {self.goal_name} not defined')
+            raise LangBuildError(f'symbol {self.goal_name} not defined')
         self.rule_set.mark_goal(self.name_map[self.goal_name][1])
         # build rule set
         for nt_name, all_derives in self.raw_rules.items():
@@ -62,12 +66,14 @@ class PartialBuilder:
                 else:
                     for d_name in d_list:
                         if d_name not in self.name_map:
-                            raise RuntimeError(f'symbol {d_name} is not defined')
+                            raise LangBuildError(f'symbol {d_name} is not defined')
                         else:
                             derives.append(self.name_map[d_name])
                 self.rule_set.add_rule(ntid, tuple(derives))
-        parser = LALRParser(self.rule_set, self.rule_actions)
-
+        try:
+            parser = LALRParser(self.rule_set, self.rule_actions)
+        except LALRTableBuildError:
+            raise LangBuildError
         # build NFA
         nfa = alt(self.nfa_list)
         scanner = scanner_builder(nfa, self.category_info)

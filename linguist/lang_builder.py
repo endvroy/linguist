@@ -1,11 +1,11 @@
 from linguist.base.scanner.minimize_dfa import minimize_dfa
-from linguist.base.scanner.scanner import CategoryInfo
-
 from linguist.base.scanner.nfa_to_dfa import nfa_to_dfa
+from linguist.base.scanner.scanner import CategoryInfo
 from linguist.engine.bnf_parser import category_info
 from linguist.engine.bnf_parser import name as name_nfa
 from linguist.engine.re_parser import re_scanner, re_parser
 from linguist.engine.partial_builder import PartialBuilder
+from linguist.exceptions import LangBuildError, ScanError, ParseError
 
 name_dfa = minimize_dfa(nfa_to_dfa(name_nfa, category_info))
 
@@ -26,23 +26,27 @@ def dfa_checker(dfa, text):
 class LangBuilder(PartialBuilder):
     def lex(self, name, pattern, skip=False):
         if not dfa_checker(name_dfa, name):
-            raise ValueError(f'illegal name: {name}')
+            raise LangBuildError(f'illegal name: {name}')
         else:
             if name in self.name_map:
-                raise ValueError(f'conflict name {name}')
+                raise LangBuildError(f'conflict name {name}')
 
             category = len(self.category_info)
             self.name_map[name] = ('t', category)
             self.category_info.append(CategoryInfo(name, -category))
-            tokens = re_scanner.tokens(pattern)
-            nfa = re_parser.parse(tokens, category)
+            try:
+                tokens = re_scanner.tokens(pattern)
+                nfa = re_parser.parse(tokens, category)
+            except (ScanError, ParseError):
+                raise LangBuildError
+
             self.nfa_list.append(nfa)
 
             if skip:
                 self.category_info[category].action = 'skip'
 
                 def wrapper(fn):
-                    raise RuntimeError(f'cannot define action to skipped tokens {name}')
+                    raise LangBuildError(f'cannot define action to skipped tokens {name}')
             else:
                 def wrapper(fn):
                     self.category_info[category].action = fn

@@ -1,8 +1,9 @@
 import unittest
 
 from linguist.base.metachar import eof
-from linguist.base.scanner.scanner import scanner_builder, CategoryInfo
+from linguist.base.scanner.scanner import scanner_builder
 from linguist.engine.re_parser import *
+from linguist.exceptions import ScanError, ParseError
 
 
 class TestLexer(unittest.TestCase):
@@ -39,11 +40,11 @@ class TestGrammar(unittest.TestCase):
         self.assertEqual([(0, 'a42aa13^37'), (eof, '')], list(tks))
 
         tks = scanner.tokens('a\\\\')
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ScanError):
             list(tks)
 
         tks = scanner.tokens('\\')
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ScanError):
             list(tks)
 
     def test_parser_2(self):
@@ -58,16 +59,16 @@ class TestGrammar(unittest.TestCase):
         self.assertEqual([(0, 'abc麻辣香锅'), (eof, '')], list(tks))
 
         tks = scanner.tokens('^')
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ScanError):
             list(tks)
 
         tks = scanner.tokens('4')
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ScanError):
             list(tks)
 
     def test_errornous_re(self):
         tokens = re_scanner.tokens(r'[a-m-z]')
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ParseError):
             re_parser.parse(tokens)
 
 

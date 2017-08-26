@@ -1,6 +1,7 @@
 from linguist.base.lalr_parser.rule_set import Action
 from linguist.base.lalr_parser.parser_base import d, t, nt
 from linguist.base.metachar import epsilon
+from linguist.exceptions import ParseError
 
 
 def pop_len(derives):
@@ -25,7 +26,7 @@ class LALRParser:
         while True:
             state = state_stack[-1]
             if token[0] not in self.action[state]:
-                raise RuntimeError  # error
+                raise ParseError(f'Unexpected token: {token}')
             else:
                 action = self.action[state][token[0]]
                 if action[0] == Action.accept:
@@ -62,5 +63,5 @@ class LALRParser:
                     data_stack.append(data)
                     state = state_stack[-1]
                     state_stack.append(self.goto[state][nt(ntid)])
-                else:
-                    raise RuntimeError  # error
+                # else:
+                #     raise ParseError  # error

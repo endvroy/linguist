@@ -1,6 +1,5 @@
 import unittest
 
-from linguist.base.scanner.minimize_dfa import *
 from linguist.base.scanner.re_utils import atom, cat, alt, k_closure
 from linguist.base.scanner.scanner import *
 

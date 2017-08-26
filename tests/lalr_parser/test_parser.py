@@ -63,7 +63,7 @@ class TestParser(unittest.TestCase):
                                (eof, '')])
         self.assertEqual(result, 23)
 
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(ParseError):
             parser.parse([('num', 3), ('plus', '+'), ('plus', '+'), (eof, '')])
 
     def test_parse_2(self):

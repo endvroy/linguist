@@ -1,8 +1,7 @@
 from linguist.base.lalr_parser.rule_set import LALRRuleSet
 from linguist.base.lalr_parser.parser_base import d, t, nt
 from linguist.base.scanner.scanner import CategoryInfo, scanner_builder
-
-import linguist.base.scanner.re_utils as re_utils
+from linguist.base.scanner import re_utils
 from linguist.base.lalr_parser.parser import LALRParser
 from linguist.base.metachar import epsilon
 
@@ -39,7 +38,7 @@ alt_delim = re_utils.atom('|', ALT_DELIM)
 
 nfa = re_utils.alt([name, blank, eq, alt_delim])
 
-scanner = scanner_builder(nfa, category_info)
+bnf_scanner = scanner_builder(nfa, category_info)
 
 rule_set = LALRRuleSet()
 bnf, alt, dlist = rule_set.new_nt(3)
@@ -91,4 +90,4 @@ def rule_dlist_base(data_list, repo):
 
 rule_actions[(dlist, 1)] = rule_dlist_base
 
-parser = LALRParser(rule_set, rule_actions)
+bnf_parser = LALRParser(rule_set, rule_actions)
