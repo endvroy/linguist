@@ -73,7 +73,7 @@ class PartialBuilder:
         try:
             parser = LALRParser(self.rule_set, self.rule_actions)
         except LALRTableBuildError as exc:
-            raise LangBuildError('Grammar not in LALR')  # todo: give more info
+            raise LangBuildError('Grammar not in LALR(1)')  # todo: give more info
         # build NFA
         nfa = alt(self.nfa_list)
         scanner = scanner_builder(nfa, self.category_info)
