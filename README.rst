@@ -3,10 +3,11 @@ Linguist: Getting Started
 linguist is an LALR(1) compiler-compiler that is built upon itself
 
 .. code-block:: python
+
     from linguist import LangBuilder
 
     lb = LangBuilder()
-    lb.lex('PLUS', r'\+')   # add a lexical rule
+    lb.lex('PLUS', r'\+')   # add a lexical rule by specifying its regular expression
     lb.lex('MINUS', '-')
     lb.lex('TIMES', r'\*')
     lb.lex('DIVIDE', '/')
