@@ -3,6 +3,7 @@ import unittest
 
 from linguist.base.lalr_parser.rule_set import *
 from linguist.base.lalr_parser.parser_base import d, t, nt
+from linguist.exceptions import LALRTableBuildError
 
 
 def build_test_rule():
@@ -196,7 +197,7 @@ class TestRuleSet(unittest.TestCase):
         rule_set.add_rule(C, d(t('e')))
         rule_set.mark_goal(S)
 
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LALRTableBuildError):
             action, goto = rule_set.calc_parse_table()
 
     def test_calc_ambiguous_table(self):
@@ -208,7 +209,7 @@ class TestRuleSet(unittest.TestCase):
         rule_set.add_rule(stmt, d(t('assign')))
         rule_set.mark_goal(goal)
 
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LALRTableBuildError):
             action, goto = rule_set.calc_parse_table()
 
     def test_calc_ambiguous_table_2(self):
@@ -219,7 +220,7 @@ class TestRuleSet(unittest.TestCase):
         rule_set.add_rule(stmt, d(t('assign')))
         rule_set.mark_goal(stmt)
 
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(LALRTableBuildError):
             action, goto = rule_set.calc_parse_table()
 
 

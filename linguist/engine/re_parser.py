@@ -2,7 +2,6 @@ from linguist.base.scanner.scanner import CategoryInfo
 
 import linguist.base.scanner.re_utils as re_utils
 from linguist.engine.partial_builder import PartialBuilder
-from linguist.exceptions import ParseError
 
 pb = PartialBuilder()
 pb.goal('alt')
@@ -212,7 +211,7 @@ pb.rule('remaining = ')
 @pb.rule('char_range = set_char DASH set_char')
 def rule_char_range(data_list, repo):
     if ord(data_list[0]) > ord(data_list[2]):
-        raise ParseError('range values reversed')
+        raise ValueError('range values reversed')
     return re_utils.char_range(data_list[0], data_list[2])
 
 

@@ -1,8 +1,7 @@
-from linguist.base.scanner.char_classifier import CharClassifier, make_markers, merge_classifiers
-from linguist.base.scanner.char_classifier import merge_markers
-
+from linguist.base.scanner.char_classifier import CharClassifier, make_markers, merge_classifiers, merge_markers
 from linguist.base.metachar import epsilon
 from linguist.base.scanner.nfa import NFA
+from linguist.exceptions import ReversedRangeError
 
 
 def atom(char, category):
@@ -49,7 +48,7 @@ def char_member(char):
 
 def char_range(start, end):
     if ord(start) > ord(end):
-        raise ValueError('range values reversed')
+        raise ReversedRangeError(start, end)
     markers = make_markers([ord(start), ord(end) + 1])
     accept = {1}
     return markers, accept

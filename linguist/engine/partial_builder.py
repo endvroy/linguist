@@ -72,8 +72,8 @@ class PartialBuilder:
                 self.rule_set.add_rule(ntid, tuple(derives))
         try:
             parser = LALRParser(self.rule_set, self.rule_actions)
-        except LALRTableBuildError:
-            raise LangBuildError
+        except LALRTableBuildError as exc:
+            raise LangBuildError('Grammar not in LALR')  # todo: give more info
         # build NFA
         nfa = alt(self.nfa_list)
         scanner = scanner_builder(nfa, self.category_info)

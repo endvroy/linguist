@@ -26,7 +26,7 @@ class LALRParser:
         while True:
             state = state_stack[-1]
             if token[0] not in self.action[state]:
-                raise ParseError(f'Unexpected token: {token}')
+                raise ParseError(self.action[state].keys(), token[0])
             else:
                 action = self.action[state][token[0]]
                 if action[0] == Action.accept:
@@ -63,5 +63,5 @@ class LALRParser:
                     data_stack.append(data)
                     state = state_stack[-1]
                     state_stack.append(self.goto[state][nt(ntid)])
-                # else:
-                #     raise ParseError  # error
+                    # else:
+                    #     raise ParseError  # error

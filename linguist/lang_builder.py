@@ -38,7 +38,10 @@ class LangBuilder(PartialBuilder):
                 tokens = re_scanner.tokens(pattern)
                 nfa = re_parser.parse(tokens, category)
             except (ScanError, ParseError):
-                raise LangBuildError
+                raise LangBuildError('Illegal Regular Expression')
+
+            if nfa.starting_state in nfa.accepting_states:
+                raise LangBuildError('Regular Expression cannot match empty string')
 
             self.nfa_list.append(nfa)
 

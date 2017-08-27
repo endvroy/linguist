@@ -47,7 +47,7 @@ class Scanner:
                 index = end
                 return token
             else:
-                raise ScanError(f"illegal character '{text[end]}' near position {end}")
+                raise ScanError(text[end], end)
 
         while index < limit:
             token = next_token()

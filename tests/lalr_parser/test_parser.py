@@ -1,7 +1,6 @@
 import unittest
 
 from linguist.base.lalr_parser.rule_set import LALRRuleSet, d
-
 from linguist.base.lalr_parser.parser import *
 from linguist.base.metachar import eof
 

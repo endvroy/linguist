@@ -2,6 +2,7 @@ from enum import Enum, unique
 
 from linguist.base.lalr_parser.parser_base import RuleSet, d, t
 from linguist.base.metachar import eof, epsilon
+from linguist.exceptions import LALRTableBuildError
 
 
 @unique
@@ -119,15 +120,13 @@ class LALRRuleSet(RuleSet):
                         if category == eof and ntid == self.goal:  # accept
                             entry = Action.accept, ntid, rule_id
                             if eof in action[i] and action[i][eof] != entry:
-                                raise RuntimeError(
-                                    f'grammar not in LALR(1); conflict actions spotted in state {item_set}')
+                                raise LALRTableBuildError(cc, i)
                             else:
                                 action[i][eof] = entry  # accept
                         else:  # reduce
                             entry = Action.reduce, ntid, rule_id
                             if category in action[i] and action[i][category] != entry:  # conflict
-                                raise RuntimeError(
-                                    f'grammar not in LALR(1); conflict actions spotted in state {item_set}')
+                                raise LALRTableBuildError(cc, i)
                             else:
                                 action[i][category] = entry  # reduce
                 else:  # shift or error
@@ -135,8 +134,7 @@ class LALRRuleSet(RuleSet):
                     if next_sym[0] == 't':  # shift
                         entry = Action.shift,
                         if next_sym[1] in action[i] and action[i][next_sym[1]] != entry:
-                            raise RuntimeError(
-                                f'grammar not in LALR(1); conflict actions spotted in state {item_set}')
+                            raise LALRTableBuildError(cc, i)
                         else:
                             action[i][next_sym[1]] = entry  # shift
 
