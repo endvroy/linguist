@@ -2,7 +2,7 @@ Linguist: Getting Started
 =========================
 linguist is an LALR(1) compiler-compiler that is built upon itself
 
-..code-block:: python
+.. code-block:: python
     from linguist import LangBuilder
 
     lb = LangBuilder()
