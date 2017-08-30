@@ -1,7 +1,8 @@
 Linguist: Getting Started
 =========================
-linguist is an LALR(1) compiler-compiler that is built upon itself
+Linguist is an LALR(1) compiler-compiler that is built upon itself
 
+A quick example:
 .. code-block:: python
 
     from linguist import LangBuilder
@@ -60,3 +61,17 @@ linguist is an LALR(1) compiler-compiler that is built upon itself
 
     tokens = scanner.tokens('(3 + 4) * 5')
     result = parser.parse(tokens)   # 35
+
+Use lex(name, pattern, skip=True) to add a lexical rule
+You can use it as a decorator to associate an action with the rule
+The wrapped function must have the signature fn(lexeme), where lexeme is the captured text
+If no action is specified, the lexeme is returned unaltered
+
+Use rule(bnf) to add a grammatical rule
+You can use it as a decorator to associate an action with **each** production rule specified in the bnf
+The wrapped function must have the signature fn(data_list, repo), where repo is the external repository (ie. a symbol table) specified before the parsing (see below)
+If no action is specified, **None** is returned
+
+After the rules are specified, use build() to build the scanner and parser
+use scanner.tokens(text) to tokenize the text, then use parser.parse(tokens, repo=None) to perform the parsing
+The *repo* parameter will be passed to each action
