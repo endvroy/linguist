@@ -3,6 +3,7 @@ Linguist: Getting Started
 Linguist is an LALR(1) compiler-compiler that is built upon itself
 
 A quick example:
+
 .. code-block:: python
 
     from linguist import LangBuilder
