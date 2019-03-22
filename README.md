@@ -2,33 +2,31 @@
 
 ## Introduction
 
-Linguist is an LALR(1)[1] compiler-compiler[2] that is built upon itself. In Linguist, you can define syntax rules and grammar rules for your language. With these rules, Linguist can parse the input expression and generate its result.
+Linguist is an LALR(1)[1] compiler-compiler[2] that is built upon itself. In Linguist, you can define your own language by supplying the corresponding syntax rules and grammar rules. Linguist generates a parser with the supplied rules, which can then parse the input expression and generate its result.
 
-The implementation of Linguist is in `Python3`, please make sure you have `Python3` installed.
+Linguist is implemented in `Python3`.
 
-## Features
+## Usage
 
 **1. Define Lexical Rules**
 
 Lexical rules can be added with `lb.lex(name, pattern, skip=True)`.
 
-If `lb.lex` is defined as a decorator (`@`) of a function, the function is associated to the rule. This function **must** have the signature `fn(lexeme)`, where `lexeme` is the captured text. If no action is specified, `lexeme` itself is returned.
+If `lb.lex` is defined as a decorator (`@`) of a function, the function is associated to the rule. This function **must** have the signature `fn(lexeme)`, where `lexeme` is the captured text. The return value of the function will be the value of the token. If no action is specified, `lexeme` itself is returned.
 
 **2. Define Grammar Rules**
 
 Grammar rules can be added with `lb.rule(bnf)`. 
 
-If `lb.rule` is defined as a decorator (`@`) of a function, the function is associated to **each** rule specified in `bnf`. This function **must** have the signature `fn(data_list, repo)`, where `repo` is the external repository specified before the parsing, like a symbol table. If no action is specified, **None** is returned.
+If `lb.rule` is defined as a decorator (`@`) of a function, the function is associated to **each** rule specified in `bnf`. This function **must** have the signature `fn(data_list, repo)`, where `repo` is the external repository, such as a symbol table. If no funciton is decorated is specified, **None** is returned.
 
 **3. Language Builder**
 
-The function `build()` can build the scanner and the parser of your language. To scan the expression in text, use `scanner.tokens(text)`. To parse the expression, use `parser.parse(tokens, repo=None)`.
+After the lexical rules and grammatical rules are specified, call `build()` to build the scanner and the parser for the specified language. To tokenize the input, use `scanner.tokens(text)`. To parse the tokens, use `parser.parse(tokens, repo)`.
 
 Note that the parameter `repo` should be passed to **each action**.
 
-## How To Use
-
-This section shows sample code for using Linguist. You can refer to this section when you create your own language.
+## Example
 
 **1. Import Linguist**
 
@@ -104,13 +102,13 @@ scanner, parser = lb.build()    # build the language
 **5. Test On Expressions**
 ~~~~python
 tokens = scanner.tokens('3 + 4 * 5')
-result = parser.parse(tokens)   # Result is 23
+result = parser.parse(tokens)   # result = 23
 
 tokens = scanner.tokens('(3 + 4) * 5')
-result = parser.parse(tokens)   # Result is 35
+result = parser.parse(tokens)   # result = 35
 ~~~~
 
 ## Reference
 
-1. A Tutorial Explaining LALR(1) Parsing: [https://web.cs.dal.ca/~sjackson/lalr1.html](https://web.cs.dal.ca/~sjackson/lalr1.html)
+1. LALR Parsing: [https://web.stanford.edu/class/archive/cs/cs143/cs143.1128/handouts/140%20LALR%20Parsing.pdf](https://web.stanford.edu/class/archive/cs/cs143/cs143.1128/handouts/140%20LALR%20Parsing.pdf)
 2. Compiler-compiler - Wikipedia: [https://en.wikipedia.org/wiki/Compiler-compiler](https://en.wikipedia.org/wiki/Compiler-compiler)
